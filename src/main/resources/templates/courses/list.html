@@ -1,0 +1,335 @@
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="az"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{layout}"> <head>-->
+<!--    <title>Təhsil Kataloqu</title>-->
+<!--    <style>-->
+<!--        .header-section {-->
+<!--            background: linear-gradient(135deg, #0d6efd 0%, #0046b8 100%);-->
+<!--            color: white; padding: 60px 0 80px 0;-->
+<!--            border-bottom-left-radius: 60px; border-bottom-right-radius: 60px;-->
+<!--            margin-bottom: -40px;-->
+<!--        }-->
+<!--        .search-container { position: relative; max-width: 600px; margin: 30px auto 0 auto; }-->
+<!--        .search-container i { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); color: #0d6efd; }-->
+<!--        #courseSearch { padding-left: 60px; height: 60px; border: none; border-radius: 50px; }-->
+<!--        .c-card { border-radius: 25px; overflow: hidden; border: none; transition: 0.4s; height: 100%; background: white; }-->
+<!--        .c-card:hover { transform: translateY(-12px); box-shadow: 0 20px 40px rgba(0,0,0,0.12) !important; }-->
+<!--        .c-img { height: 200px; object-fit: cover; width: 100%; }-->
+<!--        .filter-btn { background: white; border: none; padding: 12px 30px; border-radius: 50px; color: #555; font-weight: 600; margin: 0 5px; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }-->
+<!--        .filter-btn.active { background: #0d6efd; color: white; }-->
+<!--        .card-input { background: #f8fafc; border: 2px solid #eee; padding: 12px 20px; border-radius: 15px; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div layout:fragment="content">-->
+<!--    <div class="header-section text-center">-->
+<!--        <div class="container">-->
+<!--            <h1 class="fw-bold display-5 mb-3">Təhsil Kataloqu</h1>-->
+<!--            <p class="lead opacity-75">Bilik paylaşıldıqca artar. Kursunu seç və başla!</p>-->
+<!--            <div class="search-container shadow-lg">-->
+<!--                <i class="fas fa-search"></i>-->
+<!--                <input id="courseSearch" class="form-control" placeholder="Kurs axtar..." onkeyup="searchCourse()">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="container text-center" style="margin-top: 80px; margin-bottom: 40px;">-->
+<!--        <button class="filter-btn active" onclick="filterCat('all', this)">Hamısı</button>-->
+<!--        <button class="filter-btn" onclick="filterCat('free', this)">Pulsuz</button>-->
+<!--        <button class="filter-btn" onclick="filterCat('paid', this)">Ödənişli</button>-->
+<!--    </div>-->
+
+<!--    <div class="container pb-5">-->
+<!--        <form id="enrollForm" th:action="@{/enroll}" method="POST" style="display:none;">-->
+<!--            <input type="hidden" name="courseId" id="enrollCourseId">-->
+<!--        </form>-->
+
+<!--        <div class="row g-4" id="course-grid">-->
+<!--            <div class="col-md-4 course-item" th:each="c : ${courses}" th:attr="data-type=${(c.price != null and c.price > 0) ? 'paid' : 'free'}">-->
+<!--                <div class="card c-card shadow-sm">-->
+<!--                    <img th:src="${c.iconClass}" class="c-img">-->
+<!--                    <div class="p-4">-->
+<!--                        <div class="d-flex justify-content-between align-items-center mb-3">-->
+<!--                            <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2" th:if="${c.price == null or c.price == 0}">Pulsuz</span>-->
+<!--                            <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2" th:if="${c.price > 0}" th:text="${c.price + ' AZN'}"></span>-->
+<!--                        </div>-->
+<!--                        <h5 class="fw-bold c-title mb-2 text-dark" th:text="${c.name}"></h5>-->
+<!--                        <p class="text-muted small mb-4" th:text="${c.description}"></p>-->
+<!--&lt;!&ndash;                        <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold" th:attr="data-id=${c.id}, data-price=${c.price}" onclick="handleCourseAccess(this)">&ndash;&gt;-->
+<!--&lt;!&ndash;                            Kursa Daxil Ol <i class="fas fa-chevron-right ms-2"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </button>&ndash;&gt;-->
+<!--                        <a th:href="@{/courses/{id}(id=${c.id})}" class="btn btn-primary w-100 rounded-pill py-3 fw-bold">-->
+<!--                            Kursa Daxil Ol <i class="fas fa-chevron-right ms-2"></i>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">-->
+<!--        <div class="modal-dialog modal-dialog-centered">-->
+<!--            <div class="modal-content shadow-lg border-0" style="border-radius: 30px;">-->
+<!--                <div class="bg-primary text-white p-4" style="border-radius: 30px 30px 0 0;">-->
+<!--                    <h5 class="mb-0 fw-bold"><i class="fas fa-shield-alt me-2"></i> Təhlükəsiz Ödəniş</h5>-->
+<!--                </div>-->
+<!--                <div class="modal-body p-4">-->
+<!--                    <form id="paymentForm" novalidate>-->
+<!--                        <input type="hidden" id="selectedCourseId">-->
+<!--                        <div class="mb-3">-->
+<!--                            <label class="form-label small fw-bold">Kartın Nömrəsi</label>-->
+<!--                            <input type="text" id="cardNumber" class="form-control card-input" placeholder="0000 0000 0000 0000" maxlength="19" required>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-6 mb-3">-->
+<!--                                <label class="form-label small fw-bold">MM/YY</label>-->
+<!--                                <input type="text" id="cardExpiry" class="form-control card-input" placeholder="12/26" maxlength="5" required>-->
+<!--                            </div>-->
+<!--                            <div class="col-6 mb-3">-->
+<!--                                <label class="form-label small fw-bold">CVV</label>-->
+<!--                                <input type="text" id="cardCvv" class="form-control card-input" placeholder="123" maxlength="3" required>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <button type="submit" class="btn btn-primary w-100 rounded-pill py-3 mt-3 fw-bold">Ödənişi Tamamla</button>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script th:inline="javascript">-->
+<!--        function handleCourseAccess(btn) {-->
+<!--            const courseId = btn.getAttribute("data-id");-->
+<!--            const price = parseFloat(btn.getAttribute("data-price") || 0);-->
+<!--            if (price === 0) { submitEnrollment(courseId); }-->
+<!--            else {-->
+<!--                document.getElementById("selectedCourseId").value = courseId;-->
+<!--                new bootstrap.Modal(document.getElementById('paymentModal')).show();-->
+<!--            }-->
+<!--        }-->
+<!--        function submitEnrollment(courseId) {-->
+<!--            document.getElementById("enrollCourseId").value = courseId;-->
+<!--            document.getElementById("enrollForm").submit();-->
+<!--        }-->
+<!--        // ... (digər search və filter funksiyaların olduğu kimi qalır)-->
+<!--        function searchCourse() {-->
+<!--            let v = document.getElementById("courseSearch").value.toLowerCase();-->
+<!--            document.querySelectorAll(".course-item").forEach(i => {-->
+<!--                let title = i.querySelector(".c-title").innerText.toLowerCase();-->
+<!--                i.style.display = title.includes(v) ? "block" : "none";-->
+<!--            });-->
+<!--        }-->
+<!--        function filterCat(cat, btn) {-->
+<!--            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));-->
+<!--            btn.classList.add("active");-->
+<!--            document.querySelectorAll(".course-item").forEach(i => {-->
+<!--                if (cat === "all") i.style.display = "block";-->
+<!--                else i.style.display = i.getAttribute("data-type") === cat ? "block" : "none";-->
+<!--            });-->
+<!--        }-->
+<!--    </script>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="az"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Təhsil Kataloqu</title>
+    <style>
+        .header-section {
+            background: linear-gradient(135deg, #0d6efd 0%, #0046b8 100%);
+            color: white; padding: 60px 0 80px 0;
+            border-bottom-left-radius: 60px; border-bottom-right-radius: 60px;
+            margin-bottom: -40px;
+        }
+        .search-container { position: relative; max-width: 600px; margin: 30px auto 0 auto; }
+        .search-container i { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); color: #0d6efd; }
+        #courseSearch { padding-left: 60px; height: 60px; border: none; border-radius: 50px; }
+
+        /* Kart dizaynı */
+        .c-card { border-radius: 25px; overflow: hidden; border: none; transition: 0.4s; height: 100%; background: white; display: flex; flex-direction: column; }
+        .c-card:hover { transform: translateY(-12px); box-shadow: 0 20px 40px rgba(0,0,0,0.12) !important; }
+        .c-img { height: 200px; object-fit: cover; width: 100%; }
+
+        .filter-btn { background: white; border: none; padding: 12px 30px; border-radius: 50px; color: #555; font-weight: 600; margin: 0 5px; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .filter-btn.active { background: #0d6efd; color: white; }
+        .card-input { background: #f8fafc; border: 2px solid #eee; padding: 12px 20px; border-radius: 15px; }
+
+        /* Komment bölməsi üçün xüsusi stillər */
+        .comment-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .comment-item { font-size: 0.85rem; margin-bottom: 10px; }
+        .reply-item { margin-left: 20px; border-left: 2px solid #dee2e6; padding-left: 10px; margin-top: 5px; background: #f9f9f9; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="header-section text-center">
+        <div class="container">
+            <h1 class="fw-bold display-5 mb-3">Təhsil Kataloqu</h1>
+            <p class="lead opacity-75">Bilik paylaşıldıqca artar. Kursunu seç və başla!</p>
+            <div class="search-container shadow-lg">
+                <i class="fas fa-search"></i>
+                <input id="courseSearch" class="form-control" placeholder="Kurs axtar..." onkeyup="searchCourse()">
+            </div>
+        </div>
+    </div>
+
+    <div class="container text-center" style="margin-top: 80px; margin-bottom: 40px;">
+        <button class="filter-btn active" onclick="filterCat('all', this)">Hamısı</button>
+        <button class="filter-btn" onclick="filterCat('free', this)">Pulsuz</button>
+        <button class="filter-btn" onclick="filterCat('paid', this)">Ödənişli</button>
+    </div>
+
+    <div class="container pb-5">
+        <form id="enrollForm" th:action="@{/enroll}" method="POST" style="display:none;">
+            <input type="hidden" name="courseId" id="enrollCourseId">
+        </form>
+
+<!--        <div class="row g-4" id="course-grid">-->
+<!--            <div class="col-md-4 course-item" th:each="c : ${courses}" th:attr="data-type=${(c.price != null and c.price > 0) ? 'paid' : 'free'}">-->
+<!--                <div class="card c-card shadow-sm">-->
+<!--                    <img th:src="${c.iconClass}" class="c-img" alt="Course Image">-->
+<!--                    <div class="p-4 flex-grow-1">-->
+<!--                        <div class="d-flex justify-content-between align-items-center mb-3">-->
+<!--                            <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2" th:if="${c.price == null or c.price == 0}">Pulsuz</span>-->
+<!--                            <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2" th:if="${c.price > 0}" th:text="${c.price + ' AZN'}"></span>-->
+<!--                        </div>-->
+<!--                        <h5 class="fw-bold c-title mb-2 text-dark" th:text="${c.name}"></h5>-->
+<!--                        <p class="text-muted small mb-4" th:text="${c.description}"></p>-->
+
+<!--                        <a th:href="@{/courses/{id}(id=${c.id})}" class="btn btn-primary w-100 rounded-pill py-3 fw-bold mb-3">-->
+<!--                            Kursa Daxil Ol <i class="fas fa-chevron-right ms-2"></i>-->
+<!--                        </a>-->
+
+<!--                        <div class="comment-section">-->
+<!--                            <h6 class="small fw-bold text-uppercase text-muted mb-3">Rəylər:</h6>-->
+
+<!--                            <div th:if="${c.comments != null and !c.comments.isEmpty()}">-->
+<!--                                <div th:each="comment : ${c.comments}" class="comment-item">-->
+<!--                                    <div class="p-2 bg-light rounded shadow-sm">-->
+<!--                                        <p class="mb-0 text-dark" th:text="${comment.text}"></p>-->
+<!--                                        <small class="text-muted" style="font-size: 0.7rem;" th:text="${#temporals.format(comment.createdAt,'dd/MM/yyyy HH:mm')}"></small>-->
+<!--                                    </div>-->
+
+<!--                                    <div th:if="${comment.replies != null and !comment.replies.isEmpty()}">-->
+<!--                                        <div th:each="reply : ${comment.replies}" class="reply-item p-2">-->
+<!--                                            <p class="mb-0 text-dark"><i class="fas fa-reply fa-rotate-180 me-1 text-primary"></i> <span th:text="${reply.text}"></span></p>-->
+<!--                                            <small class="text-muted" style="font-size: 0.7rem;" th:text="${#temporals.format(reply.createdAt,'dd/MM/yyyy HH:mm')}"></small>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+<!--                            <div th:if="${c.comments == null or c.comments.isEmpty()}" class="text-muted small italic">-->
+<!--                                <em>Hələ rəy yoxdur.</em>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="row g-4" id="course-grid">
+            <div class="col-md-4 course-item" th:each="c : ${courses}" th:attr="data-type=${(c.price != null and c.price > 0) ? 'paid' : 'free'}">
+                <div class="card c-card shadow-sm">
+                    <img th:src="${c.iconClass}" class="c-img" alt="Course Image">
+                    <div class="p-4 flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2" th:if="${c.price == null or c.price == 0}">Pulsuz</span>
+                            <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2" th:if="${c.price > 0}" th:text="${c.price + ' AZN'}"></span>
+                        </div>
+                        <h5 class="fw-bold c-title mb-2 text-dark" th:text="${c.name}"></h5>
+                        <p class="text-muted small mb-4" th:text="${c.description}"></p>
+
+                        <a th:href="@{/courses/{id}(id=${c.id})}" class="btn btn-primary w-100 rounded-pill py-3 fw-bold">
+                            Kursa Daxil Ol <i class="fas fa-chevron-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 30px;">
+                <div class="bg-primary text-white p-4" style="border-radius: 30px 30px 0 0;">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-shield-alt me-2"></i> Təhlükəsiz Ödəniş</h5>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="paymentForm" novalidate>
+                        <input type="hidden" id="selectedCourseId">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Kartın Nömrəsi</label>
+                            <input type="text" id="cardNumber" class="form-control card-input" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label small fw-bold">MM/YY</label>
+                                <input type="text" id="cardExpiry" class="form-control card-input" placeholder="12/26" maxlength="5" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label small fw-bold">CVV</label>
+                                <input type="text" id="cardCvv" class="form-control card-input" placeholder="123" maxlength="3" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill py-3 mt-3 fw-bold">Ödənişi Tamamla</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Axtarış funksiyası
+        function searchCourse() {
+            let v = document.getElementById("courseSearch").value.toLowerCase();
+            document.querySelectorAll(".course-item").forEach(i => {
+                let title = i.querySelector(".c-title").innerText.toLowerCase();
+                i.style.display = title.includes(v) ? "block" : "none";
+            });
+        }
+
+        // Filtr funksiyası
+        function filterCat(cat, btn) {
+            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            document.querySelectorAll(".course-item").forEach(i => {
+                if (cat === "all") i.style.display = "block";
+                else i.style.display = i.getAttribute("data-type") === cat ? "block" : "none";
+            });
+        }
+
+        // Ödəniş və qeydiyyat məntiqi
+        function handleCourseAccess(btn) {
+            const courseId = btn.getAttribute("data-id");
+            const price = parseFloat(btn.getAttribute("data-price") || 0);
+            if (price === 0) { submitEnrollment(courseId); }
+            else {
+                document.getElementById("selectedCourseId").value = courseId;
+                new bootstrap.Modal(document.getElementById('paymentModal')).show();
+            }
+        }
+
+        function submitEnrollment(courseId) {
+            document.getElementById("enrollCourseId").value = courseId;
+            document.getElementById("enrollForm").submit();
+        }
+    </script>
+</div>
+</body>
+</html>

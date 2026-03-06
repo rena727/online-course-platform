@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{admin/admin-layout}">
+<head><title>Sual Formu</title></head>
+<body>
+<div layout:fragment="page-title">Yeni Sual Əlavə Et</div>
+<div layout:fragment="content">
+  <div class="glass-card mt-2">
+    <form th:action="@{/admin/exams/{id}/questions/save(id=${examId})}" th:object="${question}" method="post">
+      <div class="mb-3">
+        <label class="form-label">Sualın Mətni</label>
+        <textarea class="form-control" th:field="*{content}" rows="3" required></textarea>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3"><label>Variant A</label><input type="text" class="form-control" th:field="*{optionA}" required></div>
+        <div class="col-md-6 mb-3"><label>Variant B</label><input type="text" class="form-control" th:field="*{optionB}" required></div>
+        <div class="col-md-6 mb-3"><label>Variant C</label><input type="text" class="form-control" th:field="*{optionC}" required></div>
+        <div class="col-md-6 mb-3"><label>Variant D</label><input type="text" class="form-control" th:field="*{optionD}" required></div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Düzgün Variantın İndeksi (0: A, 1: B, 2: C, 3: D)</label>
+        <input type="number" class="form-control" th:field="*{correctIndex}" min="0" max="3" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Yadda Saxla</button>
+      <a th:href="@{/admin/exams/{id}/questions(id=${examId})}" class="btn btn-secondary ms-2">Ləğv et</a>
+    </form>
+  </div>
+</div>
+</body>
+</html>

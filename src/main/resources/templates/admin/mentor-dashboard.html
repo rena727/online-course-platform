@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="az" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Dashboard | BrainRise</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --mentor-primary: #6366f1; --mentor-bg: #f8fafc; --sidebar-dark: #0f172a; }
+        body { background-color: var(--mentor-bg); font-family: 'Plus Jakarta Sans', sans-serif; color: #334155; }
+
+        /* Sidebar */
+        .sidebar { background: var(--sidebar-dark); min-height: 100vh; color: white; padding: 1.5rem; position: sticky; top: 0; border-radius: 0 30px 30px 0; }
+        .nav-link { color: #94a3b8; padding: 0.8rem 1rem; border-radius: 12px; margin-bottom: 0.5rem; transition: 0.3s; text-decoration: none; display: block; }
+        .nav-link:hover, .nav-link.active { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+
+        /* Kartlar */
+        .stat-card { border: none; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.02); background: white; padding: 2rem; transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(99, 102, 241, 0.1); }
+
+        /* Yaradıcı Kart */
+        .create-card {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white; border-radius: 24px; padding: 2.5rem; position: relative; overflow: hidden;
+        }
+        .create-card i.bg-icon { position: absolute; right: -20px; bottom: -20px; font-size: 8rem; opacity: 0.1; }
+
+        .btn-white { background: white; color: #6366f1; border-radius: 50px; font-weight: 700; padding: 0.8rem 2rem; border: none; transition: 0.3s; }
+        .btn-white:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+        .recent-box { background: white; border-radius: 24px; padding: 1.5rem; border: 1px solid #f1f5f9; }
+        .activity-item { border-left: 2px solid #e2e8f0; padding-left: 1.5rem; position: relative; padding-bottom: 1.5rem; }
+        .activity-item::before { content: ''; width: 12px; height: 12px; background: #6366f1; border-radius: 50%; position: absolute; left: -7px; top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3 col-lg-2 sidebar">
+            <div class="mb-5 px-2 text-center">
+                <h3 class="fw-bold text-white">BRAINRISE<span class="text-primary">.</span></h3>
+                <span class="badge bg-primary-subtle text-primary px-3">MENTOR</span>
+            </div>
+
+            <div class="nav flex-column">
+                <a th:href="@{/mentor/dashboard}" class="nav-link active"><i class="fas fa-grid-2 me-2"></i> Dashboard</a>
+                <a th:href="@{/mentor/courses}" class="nav-link"><i class="fas fa-book-bookmark me-2"></i> Kurslarım</a>
+                <a th:href="@{/mentor/students}" class="nav-link d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-user-group me-2"></i> Tələbələrim</span>
+                    <span class="badge bg-primary rounded-pill" th:text="${totalStudents}">0</span>
+                </a>
+                <a th:href="@{/mentor/reviews}" class="nav-link"><i class="fas fa-star-half-stroke me-2"></i> Rəylər</a>
+                <hr class="border-secondary my-4">
+                <a th:href="@{/}" class="nav-link"><i class="fas fa-house me-2"></i> Ana Səhifə</a>
+                <a th:href="@{/mentor/profile/settings}" class="nav-link"><i class="fas fa-cog me-2"></i> Ayarlar</a>
+                <form th:action="@{/logout}" method="post" class="mt-5">
+                    <button type="submit" class="nav-link text-danger border-0 bg-transparent w-100 text-start">
+                        <i class="fas fa-arrow-right-from-bracket me-2"></i> Çıxış
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-9 col-lg-10 p-5">
+            <div class="mb-5">
+                <h2 class="fw-bold">Xoş gəldin, <span class="text-primary" th:text="${user.fullName}">Rena</span>! 🚀</h2>
+                <p class="text-muted">Bu gün platformada nələr baş verir? Gəl baxaq.</p>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="p-3 bg-primary-subtle text-primary rounded-4 d-inline-block mb-3"><i class="fas fa-users fa-xl"></i></div>
+                        <h3 class="fw-bold mb-0" th:text="${totalStudents}">0</h3>
+                        <small class="text-muted">Aktiv Tələbə</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="p-3 bg-warning-subtle text-warning rounded-4 d-inline-block mb-3"><i class="fas fa-star fa-xl"></i></div>
+                        <h3 class="fw-bold mb-0">4.8</h3>
+                        <small class="text-muted">Kurs Reytinqi</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="p-3 bg-success-subtle text-success rounded-4 d-inline-block mb-3"><i class="fas fa-rocket fa-xl"></i></div>
+                        <h3 class="fw-bold mb-0" th:text="${courses.size()}">0</h3>
+                        <small class="text-muted">Ümumi Kurs</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <div class="create-card shadow-lg">
+                        <i class="fas fa-graduation-cap bg-icon"></i>
+                        <h3 class="fw-bold mb-3">Yeni biliklər paylaşmağa hazırsan?</h3>
+                        <p class="mb-4 opacity-75">Hemen yeni bir kurs yarat və tələbələrinin yolunu işıqlandır.</p>
+                        <button class="btn btn-white" data-bs-toggle="modal" data-bs-target="#newCourseModal">
+                            <i class="fas fa-plus me-2"></i> Yeni Kurs Yarat
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="recent-box shadow-sm">
+                        <h5 class="fw-bold mb-4">Son Bildirişlər</h5>
+
+                        <div th:each="note, iter : ${notifications}" th:if="${iter.index < 3}" class="activity-item">
+                            <small class="text-muted d-block" th:text="${#temporals.format(note.createdAt, 'dd.MM HH:mm')}">Bayaq</small>
+                            <span class="small fw-bold" th:text="${note.title}">Başlıq</span>
+                            <p class="small text-muted mb-0" th:text="${note.message}">Mesaj...</p>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(notifications)}" class="py-3 text-center">
+                            <i class="fas fa-bell-slash text-muted mb-2"></i>
+                            <p class="small text-muted">Hələ ki, yeni bildiriş yoxdur.</p>
+                        </div>
+
+                        <a th:href="@{/mentor/notifications}" class="btn btn-link btn-sm p-0 text-decoration-none mt-3">
+                            Hamısına bax <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="newCourseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 24px;">
+            <div class="modal-header border-0 p-4 pb-0">
+                <h4 class="fw-bold mb-0">Yeni Kurs Yarat</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/mentor/course/create}" th:object="${course}" method="post">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="small fw-bold mb-2">Kursun Başlığı</label>
+                            <input type="text" th:field="*{name}" class="form-control rounded-3" required placeholder="Məs: Java Backend">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small fw-bold mb-2">Qiymət (AZN)</label>
+                            <input type="number" th:field="*{price}" class="form-control rounded-3" required placeholder="0.00">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small fw-bold mb-2">İkon Klası (FontAwesome)</label>
+                            <input type="text" th:field="*{iconClass}" class="form-control rounded-3" placeholder="fas fa-code">
+                        </div>
+                        <div class="col-12">
+                            <label class="small fw-bold mb-2">Video URL (Tanıtım)</label>
+                            <input type="text" th:field="*{videoUrl}" class="form-control rounded-3" placeholder="https://youtube.com/...">
+                        </div>
+                        <div class="col-12">
+                            <label class="small fw-bold mb-2">Kursun Qısa Təsviri</label>
+                            <textarea th:field="*{description}" class="form-control rounded-3" rows="4" placeholder="Kurs haqqında məlumat..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Ləğv et</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" style="background: #6366f1; border: none;">Yarat və Göndər</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

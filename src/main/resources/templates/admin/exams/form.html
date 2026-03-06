@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+    <title layout:title-pattern="$CONTENT_TITLE | EduMaster OS">İmtahan Formu</title>
+</head>
+<body>
+
+<div layout:fragment="page-title" th:text="${exam.id != null ? 'İmtahan Redaktəsi' : 'Yeni İmtahan'}"></div>
+
+<div layout:fragment="content">
+    <div class="glass-card mt-2">
+        <form th:action="${exam.id != null} ? @{'/admin/exams/update/' + ${exam.id}} : @{/admin/exams/save}"
+              th:object="${exam}" method="post">
+
+            <input type="hidden" th:field="*{id}">
+
+            <div class="mb-3">
+                <label class="form-label">İmtahan Adı</label>
+                <input type="text" class="form-control" th:field="*{name}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Kurs</label>
+                <select class="form-select" th:field="*{courseName}" required>
+                    <option value="">Kurs seçin...</option>
+                    <option th:each="course : ${courses}"
+                            th:value="${course.name}"
+                            th:text="${course.name}"></option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Sual sayı</label>
+                <input type="number" class="form-control" th:field="*{questionCount}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Müddət (dəq)</label>
+                <input type="number" class="form-control" th:field="*{examDuration}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Qiymət</label>
+                <input type="text" class="form-control" th:field="*{price}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Level</label>
+                <input type="text" class="form-control" th:field="*{level}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tip</label>
+                <input type="text" class="form-control" th:field="*{type}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Şəkil URL</label>
+                <input type="text" class="form-control" th:field="*{imageUrl}">
+            </div>
+
+            <button type="submit" class="btn btn-primary shadow-sm">
+                <i class="fas fa-save me-1"></i> Yadda saxla
+            </button>
+            <a th:href="@{/admin/exams}" class="btn btn-secondary ms-2">Ləğv et</a>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

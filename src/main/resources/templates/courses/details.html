@@ -1,0 +1,554 @@
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="az"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{layout}">-->
+<!--<head>-->
+<!--  <title th:text="${course.name} + ' | EduMaster'"></title>-->
+<!--  <style>-->
+<!--    .video-container { aspect-ratio: 16/9; background: #000; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }-->
+<!--    .lesson-item { cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; background: #fff; }-->
+<!--    .lesson-item:hover { background: #f1f5f9; }-->
+<!--    .lesson-item.active { background-color: #e2e8f0 !important; border-left-color: #0d6efd; color: #0d6efd; font-weight: 600; }-->
+
+<!--    .mentor-profile-box { display: flex; align-items: center; padding: 15px; border-radius: 12px; background: #fff; text-decoration: none; color: inherit; border: 1px solid #e2e8f0; margin-bottom: 25px; }-->
+<!--    .comment-card { border-radius: 12px; border-left: 4px solid #0d6efd; padding: 12px; margin-bottom: 12px; background: #fff; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }-->
+<!--    .comment-text { margin-bottom: 5px; }-->
+<!--    .comment-meta { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 10px; }-->
+<!--    .reply-btn, .like-btn { cursor: pointer; font-size: 12px; color: #0d6efd; margin-right: 10px; }-->
+<!--    .nested-reply { margin-left: 40px; margin-top: 8px; }-->
+<!--    .reply-form { margin-top: 8px; display: none; }-->
+<!--    .reply-form.active { display: block; }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div layout:fragment="content">-->
+<!--  <div class="container py-5">-->
+<!--    <div class="row">-->
+<!--      <div class="col-lg-8">-->
+
+<!--        <div class="video-container mb-4">-->
+<!--          <iframe id="mainVideo" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>-->
+<!--        </div>-->
+
+<!--        <h2 class="fw-bold mb-2" th:text="${course.name}"></h2>-->
+<!--        <p class="text-muted mb-4" th:text="${course.description}"></p>-->
+
+<!--        <hr class="my-5">-->
+
+<!--        <div class="mentor-section">-->
+<!--          <h6 class="text-uppercase fw-bold mb-3"><i class="fas fa-user-tie me-2"></i> Kursun Mentoru</h6>-->
+<!--          <div class="mentor-profile-box shadow-sm">-->
+<!--            <img th:src="${course.mentorName != null ? 'https://ui-avatars.com/api/?name=' + course.mentorName : 'https://via.placeholder.com/60'}"-->
+<!--                 style="width:55px; height:55px; border-radius:50%; object-fit: cover; margin-right:15px;">-->
+<!--            <div>-->
+<!--              <h6 class="fw-bold mb-0" th:text="${course.mentorName ?: 'Naməlum Mentor'}"></h6>-->
+<!--              <small class="text-muted">Təsdiqlənmiş Təlimatçı</small>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="comment-section mt-5">-->
+<!--          <h6 class="text-uppercase fw-bold mb-3"><i class="fas fa-comments me-2"></i> Mentoruna Sual Ver</h6>-->
+<!--          <div class="card border-0 shadow-sm p-3 rounded-4 bg-white">-->
+<!--            <form th:action="@{/courses/{id}/comment(id=${course.id})}" method="post">-->
+<!--              <textarea name="text" class="form-control border-0 bg-light rounded-3 p-3" rows="3" placeholder="Sualınızı bura yazın..." required></textarea>-->
+<!--              <div class="text-end mt-3">-->
+<!--                <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold">Göndər</button>-->
+<!--              </div>-->
+<!--            </form>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="mt-4">-->
+<!--          <div th:each="c : ${course.comments}" class="comment-card shadow-sm p-3 mb-3" th:id="'comment-' + ${c.id}">-->
+
+<!--            <div class="d-flex align-items-center mb-2">-->
+<!--              <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px; font-size: 12px;">-->
+<!--                <i class="fas fa-user"></i>-->
+<!--              </div>-->
+<!--              <strong class="text-dark" th:text="${c.userName}">İstifadəçi</strong>-->
+<!--            </div>-->
+
+<!--            <p class="comment-text text-muted mb-2" th:text="${c.text}"></p>-->
+
+<!--            <div class="comment-meta d-flex align-items-center gap-3">-->
+<!--              <small>-->
+<!--                <i class="far fa-clock me-1"></i>-->
+<!--                <span th:if="${c.createdAt != null}" th:text="${#temporals.format(c.createdAt, 'dd.MM.yyyy HH:mm')}"></span>-->
+<!--              </small>-->
+<!--              <span class="like-btn text-primary fw-bold" th:text="'Bəyən (' + ${c.likes} + ')'" data-id="${c.id}"></span>-->
+<!--              <span class="reply-btn text-primary fw-bold" data-id="${c.id}">Cavab Yaz</span>-->
+<!--            </div>-->
+
+<!--            <div class="nested-replies ms-5 mt-3 border-start ps-3">-->
+<!--              <div th:each="r : ${c.replies}" class="nested-reply bg-light p-2 rounded mb-2">-->
+<!--                <div class="d-flex align-items-center mb-1">-->
+<!--                  <small class="fw-bold text-dark" th:text="${r.userName}"></small>-->
+<!--                </div>-->
+
+<!--                <p class="comment-text small mb-1" th:text="${r.text}"></p>-->
+<!--                <div class="comment-meta smaller text-muted" style="font-size: 10px;">-->
+<!--                  <i class="far fa-clock me-1"></i>-->
+<!--                  <span th:if="${r.createdAt != null}" th:text="${#temporals.format(r.createdAt, 'dd.MM.yyyy HH:mm')}"></span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            <form class="reply-form mt-2" th:action="@{/courses/{courseId}/comment/reply(courseId=${course.id})}" method="post">-->
+<!--              <input type="hidden" name="commentId" th:value="${c.id}">-->
+<!--              <textarea name="text" class="form-control form-control-sm mb-2" rows="2" placeholder="Cavabınızı yazın..." required></textarea>-->
+<!--              <div class="text-end">-->
+<!--                <button type="submit" class="btn btn-sm btn-primary rounded-pill px-3">Göndər</button>-->
+<!--              </div>-->
+<!--            </form>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div class="col-lg-4">-->
+<!--        <div class="card shadow-sm border-0 rounded-4 overflow-hidden sticky-top" style="top: 100px;">-->
+<!--          <div class="card-header bg-dark text-white fw-bold py-3 text-center">Kursun Məzmunu</div>-->
+<!--          <div class="list-group list-group-flush" style="max-height: 70vh; overflow-y: auto;">-->
+<!--            <div th:each="lesson, iter : ${course.lessons}" class="list-group-item lesson-item border-0 py-3"-->
+<!--                 th:classappend="${iter.first} ? 'active' : ''"-->
+<!--                 th:data-url="${lesson.videoUrl}">-->
+<!--              <div class="d-flex align-items-center">-->
+<!--                <i class="fas fa-play-circle me-3 opacity-75"></i>-->
+<!--                <span class="small" th:text="${iter.count} + '. ' + ${lesson.title}"></span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div th:if="${#lists.isEmpty(course.lessons)}" class="p-4 text-center text-muted">-->
+<!--              Dərslər tezliklə əlavə olunacaq.-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <script th:inline="javascript">-->
+<!--    function getYoutubeID(url) {-->
+<!--        if (!url) return "";-->
+<!--        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;-->
+<!--        const match = url.match(regExp);-->
+<!--        return (match && match[2].length === 11) ? match[2] : url;-->
+<!--    }-->
+
+<!--    document.addEventListener("DOMContentLoaded", function() {-->
+<!--        const mainVideo = document.getElementById("mainVideo");-->
+<!--        const lessonItems = document.querySelectorAll(".lesson-item");-->
+
+<!--        lessonItems.forEach(item => {-->
+<!--            item.addEventListener("click", function() {-->
+<!--                const videoUrl = this.getAttribute("data-url");-->
+<!--                const videoId = getYoutubeID(videoUrl);-->
+<!--                if (videoId) { mainVideo.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1"; }-->
+<!--                lessonItems.forEach(i => i.classList.remove("active"));-->
+<!--                this.classList.add("active");-->
+<!--            });-->
+<!--        });-->
+
+<!--        const firstLesson = document.querySelector(".lesson-item");-->
+<!--        const courseDefaultVideo = [[${course.videoUrl}]];-->
+<!--        let initialId = firstLesson ? getYoutubeID(firstLesson.getAttribute("data-url")) : getYoutubeID(courseDefaultVideo);-->
+<!--        if (initialId) { mainVideo.src = "https://www.youtube.com/embed/" + initialId; }-->
+
+<!--        // Reply button toggle-->
+<!--        const replyButtons = document.querySelectorAll(".reply-btn");-->
+<!--        replyButtons.forEach(btn => {-->
+<!--            btn.addEventListener("click", function() {-->
+<!--                const commentId = this.getAttribute("data-id");-->
+<!--                const form = document.querySelector('#comment-' + commentId + ' .reply-form');-->
+<!--                form.classList.toggle('active');-->
+<!--            });-->
+<!--        });-->
+<!--    });-->
+<!--  </script>-->
+
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html lang="az"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title th:text="${course.name} + ' | EduMaster'"></title>
+  <style>
+    .video-container { aspect-ratio: 16/9; background: #000; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .lesson-item { cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; background: #fff; }
+    .lesson-item:hover { background: #f1f5f9; }
+    .lesson-item.active { background-color: #e2e8f0 !important; border-left-color: #0d6efd; color: #0d6efd; font-weight: 600; }
+
+    .mentor-profile-box { display: flex; align-items: center; padding: 15px; border-radius: 12px; background: #fff; text-decoration: none; color: inherit; border: 1px solid #e2e8f0; margin-bottom: 25px; }
+    .comment-card { border-radius: 12px; border-left: 4px solid #0d6efd; padding: 12px; margin-bottom: 12px; background: #fff; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
+    .comment-meta { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 10px; }
+    .reply-btn, .like-submit-btn { cursor: pointer; font-size: 12px; color: #0d6efd; border: none; background: none; font-weight: bold; padding: 0; }
+    .nested-reply { margin-left: 40px; margin-top: 8px; }
+    .reply-form { margin-top: 8px; display: none; } /* Başlanğıcda gizli */
+    .reply-form.active { display: block !important; } /* Düyməyə basanda açılması üçün */
+  </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+  <div class="container py-5">
+<!--    <div class="row">-->
+<!--      <div class="col-lg-8">-->
+
+<!--        <div class="video-container mb-4">-->
+<!--          <iframe id="mainVideo" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>-->
+<!--        </div>-->
+
+<!--        <h2 class="fw-bold mb-2" th:text="${course.name}"></h2>-->
+<!--        <p class="text-muted mb-4" th:text="${course.description}"></p>-->
+
+<!--        <hr class="my-5">-->
+
+<!--        <div class="mentor-section">-->
+<!--          <h6 class="text-uppercase fw-bold mb-3"><i class="fas fa-user-tie me-2"></i> Kursun Mentoru</h6>-->
+<!--          <div class="mentor-profile-box shadow-sm">-->
+<!--            <img th:src="${course.mentorName != null ? 'https://ui-avatars.com/api/?name=' + course.mentorName : 'https://via.placeholder.com/60'}"-->
+<!--                 style="width:55px; height:55px; border-radius:50%; object-fit: cover; margin-right:15px;">-->
+<!--            <div>-->
+<!--              <h6 class="fw-bold mb-0" th:text="${course.mentorName ?: 'Naməlum Mentor'}"></h6>-->
+<!--              <small class="text-muted">Təsdiqlənmiş Təlimatçı</small>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="comment-section mt-5">-->
+<!--          <h6 class="text-uppercase fw-bold mb-3"><i class="fas fa-comments me-2"></i> Mentoruna Sual Ver</h6>-->
+<!--          <div class="card border-0 shadow-sm p-3 rounded-4 bg-white">-->
+<!--            <form th:action="@{/courses/{id}/comment(id=${course.id})}" method="post">-->
+<!--              <textarea name="text" class="form-control border-0 bg-light rounded-3 p-3" rows="3" placeholder="Sualınızı bura yazın..." required></textarea>-->
+<!--              <div class="text-end mt-3">-->
+<!--                <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold">Göndər</button>-->
+<!--              </div>-->
+<!--            </form>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="mt-4">-->
+<!--          <div th:each="c : ${course.comments}" class="comment-card shadow-sm p-3 mb-3" th:id="'comment-block-' + ${c.id}">-->
+
+<!--            <div class="d-flex align-items-center mb-2">-->
+<!--              <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px; font-size: 12px;">-->
+<!--                <i class="fas fa-user"></i>-->
+<!--              </div>-->
+<!--              <strong class="text-dark" th:text="${c.userName}">İstifadəçi</strong>-->
+<!--            </div>-->
+
+<!--            <p class="comment-text text-muted mb-2" th:text="${c.text}"></p>-->
+
+<!--            <div class="comment-meta d-flex align-items-center gap-3">-->
+<!--              <small>-->
+<!--                <i class="far fa-clock me-1"></i>-->
+<!--                <span th:if="${c.createdAt != null}" th:text="${#temporals.format(c.createdAt, 'dd.MM.yyyy HH:mm')}"></span>-->
+<!--              </small>-->
+
+<!--              <button type="button" class="border-0 bg-transparent text-primary fw-bold p-0"-->
+<!--                      th:onclick="'handleLike(' + ${course.id} + ',' + ${c.id} + ', this)'"-->
+<!--                      style="font-size: 12px; cursor: pointer;">-->
+<!--                <i class="far fa-thumbs-up"></i> Bəyən (<span class="like-count" th:text="${c.likes != null ? c.likes : 0}">0</span>)-->
+<!--              </button>-->
+
+<!--              <span class="reply-btn text-primary fw-bold" th:attr="onclick='toggleReplyForm(' + ${c.id} + ')'">-->
+<!--        <i class="fas fa-reply"></i> Cavab Yaz-->
+<!--    </span>-->
+<!--            </div>-->
+<!--            <div class="nested-replies ms-5 mt-3 border-start ps-3">-->
+<!--              <div th:each="r : ${c.replies}" class="nested-reply bg-light p-2 rounded mb-2">-->
+<!--                <div class="d-flex align-items-center mb-1">-->
+<!--                  <small class="fw-bold text-dark" th:text="${r.userName}"></small>-->
+<!--                </div>-->
+<!--                <p class="comment-text small mb-1" th:text="${r.text}"></p>-->
+<!--                <div class="comment-meta smaller text-muted" style="font-size: 10px;">-->
+<!--                  <i class="far fa-clock me-1"></i>-->
+<!--                  <span th:if="${r.createdAt != null}" th:text="${#temporals.format(r.createdAt, 'dd.MM.yyyy HH:mm')}"></span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            <div th:id="'reply-container-' + ${c.id}" class="reply-form">-->
+<!--              <form th:action="@{/courses/{courseId}/comment/reply(courseId=${course.id})}" method="post">-->
+<!--                <input type="hidden" name="commentId" th:value="${c.id}">-->
+<!--                <textarea name="text" class="form-control form-control-sm mb-2" rows="2" placeholder="Cavabınızı yazın..." required></textarea>-->
+<!--                <div class="text-end">-->
+<!--                  <button type="submit" class="btn btn-sm btn-primary rounded-pill px-3">Göndər</button>-->
+<!--                </div>-->
+<!--              </form>-->
+<!--            </div>-->
+
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div class="col-lg-4">-->
+<!--        <div class="card shadow-sm border-0 rounded-4 overflow-hidden sticky-top" style="top: 100px;">-->
+<!--          <div class="card-header bg-dark text-white fw-bold py-3 text-center">Kursun Məzmunu</div>-->
+<!--          <div class="list-group list-group-flush" style="max-height: 70vh; overflow-y: auto;">-->
+<!--            <div th:each="lesson, iter : ${course.lessons}" class="list-group-item lesson-item border-0 py-3"-->
+<!--                 th:classappend="${iter.first} ? 'active' : ''"-->
+<!--                 th:data-url="${lesson.videoUrl}">-->
+<!--              <div class="d-flex align-items-center">-->
+<!--                <i class="fas fa-play-circle me-3 opacity-75"></i>-->
+<!--                <span class="small" th:text="${iter.count} + '. ' + ${lesson.title}"></span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div th:if="${#lists.isEmpty(course.lessons)}" class="p-4 text-center text-muted">-->
+<!--              Dərslər tezliklə əlavə olunacaq.-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--    </div>-->
+
+    <div class="row">
+      <div class="col-lg-8">
+
+        <div th:if="${isEnrolled}">
+          <div class="video-container mb-4">
+            <iframe id="mainVideo" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+          </div>
+          <h2 class="fw-bold mb-2" th:text="${course.name}"></h2>
+          <p class="text-muted mb-4" th:text="${course.description}"></p>
+        </div>
+
+        <div th:unless="${isEnrolled}">
+          <div class="card shadow-lg border-0 rounded-4 p-5 bg-white mx-auto mb-5">
+            <div class="mb-4 text-center">
+              <i class="fas fa-lock fa-4x text-primary opacity-25"></i>
+            </div>
+            <h2 class="fw-bold text-center" th:text="${course.name}"></h2>
+            <p class="text-muted mb-4 text-center">Bu kursun videolarını və materiallarını görmək üçün kursa qeydiyyatdan keçməlisiniz.</p>
+            <div class="d-flex justify-content-center gap-3">
+              <form th:action="@{/courses/enroll}" method="post">
+                <input type="hidden" name="courseId" th:value="${course.id}">
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow">
+                  <i class="fas fa-user-plus me-2"></i> Kursa Qoşul
+                </button>
+              </form>
+              <a th:href="@{/courses}" class="btn btn-outline-secondary btn-lg rounded-pill px-4">Geri Qayıt</a>
+            </div>
+            <div class="mt-4 pt-4 border-top">
+              <div class="d-flex justify-content-around text-muted small">
+                <span><i class="fas fa-check-circle text-success me-1"></i> Ömürlük giriş</span>
+                <span><i class="fas fa-certificate text-warning me-1"></i> Sertifikat</span>
+                <span><i class="fas fa-infinity text-info me-1"></i> 24/7 Dəstək</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-5">
+
+        <div class="mentor-section">
+          <h6 class="text-uppercase fw-bold mb-3"><i class="fas fa-user-tie me-2"></i> Kursun Mentoru</h6>
+          <div class="mentor-profile-box shadow-sm">
+            <img th:src="${course.mentorName != null ? 'https://ui-avatars.com/api/?name=' + course.mentorName : 'https://via.placeholder.com/60'}"
+                 style="width:55px; height:55px; border-radius:50%; object-fit: cover; margin-right:15px;">
+            <div>
+              <h6 class="fw-bold mb-0" th:text="${course.mentorName ?: 'Naməlum Mentor'}"></h6>
+              <small class="text-muted">Təsdiqlənmiş Təlimatçı</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="comment-section mt-5">
+          <h6 class="text-uppercase fw-bold mb-3"><i class="fas fa-comments me-2"></i> Mentoruna Sual Ver</h6>
+          <div class="card border-0 shadow-sm p-3 rounded-4 bg-white">
+            <form th:action="@{/courses/{id}/comment(id=${course.id})}" method="post">
+              <textarea name="text" class="form-control border-0 bg-light rounded-3 p-3" rows="3" placeholder="Sualınızı bura yazın..." required></textarea>
+              <div class="text-end mt-3">
+                <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold">Göndər</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div th:each="c : ${course.comments}" class="comment-card shadow-sm p-3 mb-3" th:id="'comment-block-' + ${c.id}">
+            <div class="d-flex align-items-center mb-2">
+              <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px; font-size: 12px;">
+                <i class="fas fa-user"></i>
+              </div>
+              <strong class="text-dark" th:text="${c.userName}">İstifadəçi</strong>
+            </div>
+            <p class="comment-text text-muted mb-2" th:text="${c.text}"></p>
+            <div class="comment-meta d-flex align-items-center gap-3">
+              <small><i class="far fa-clock me-1"></i><span th:if="${c.createdAt != null}" th:text="${#temporals.format(c.createdAt, 'dd.MM.yyyy HH:mm')}"></span></small>
+              <button type="button" class="border-0 bg-transparent text-primary fw-bold p-0" th:onclick="'handleLike(' + ${course.id} + ',' + ${c.id} + ', this)'" style="font-size: 12px;">
+                <i class="far fa-thumbs-up"></i> Bəyən (<span class="like-count" th:text="${c.likes != null ? c.likes : 0}">0</span>)
+              </button>
+              <span class="reply-btn text-primary fw-bold" th:attr="onclick='toggleReplyForm(' + ${c.id} + ')'">
+                        <i class="fas fa-reply"></i> Cavab Yaz
+                    </span>
+            </div>
+            <div class="nested-replies ms-5 mt-3 border-start ps-3">
+              <div th:each="r : ${c.replies}" class="nested-reply bg-light p-2 rounded mb-2">
+                <small class="fw-bold text-dark" th:text="${r.userName}"></small>
+                <p class="comment-text small mb-1" th:text="${r.text}"></p>
+              </div>
+            </div>
+            <div th:id="'reply-container-' + ${c.id}" class="reply-form">
+              <form th:action="@{/courses/{courseId}/comment/reply(courseId=${course.id})}" method="post">
+                <input type="hidden" name="commentId" th:value="${c.id}">
+                <textarea name="text" class="form-control form-control-sm mb-2" rows="2" required></textarea>
+                <button type="submit" class="btn btn-sm btn-primary rounded-pill">Göndər</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden sticky-top" style="top: 100px;">
+          <div class="card-header bg-dark text-white fw-bold py-3 text-center">Kursun Məzmunu</div>
+          <div class="list-group list-group-flush" style="max-height: 70vh; overflow-y: auto;">
+            <div th:each="lesson, iter : ${course.lessons}" class="list-group-item lesson-item border-0 py-3"
+                 th:classappend="${iter.first} ? 'active' : ''"
+                 th:data-url="${isEnrolled ? lesson.videoUrl : ''}">
+              <div class="d-flex align-items-center">
+                <i th:class="${isEnrolled ? 'fas fa-play-circle' : 'fas fa-lock'} + ' me-3 opacity-75'"></i>
+                <span class="small" th:text="${iter.count} + '. ' + ${lesson.title}"></span>
+              </div>
+            </div>
+            <div th:if="${#lists.isEmpty(course.lessons)}" class="p-4 text-center text-muted">Dərslər tezliklə əlavə olunacaq.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script th:inline="javascript">
+    // 1. Video ID çıxarma funksiyası
+function getYoutubeID(url) {
+    if (!url) return "";
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : url;
+}
+
+// 2. Reply formasını açıb-bağlamaq
+function toggleReplyForm(commentId) {
+    const formContainer = document.getElementById('reply-container-' + commentId);
+    if (formContainer) {
+        formContainer.classList.toggle('active');
+        // Əgər forma açılırsa, fokuslansın
+        if(formContainer.classList.contains('active')) {
+            formContainer.querySelector('textarea').focus();
+        }
+    }
+}
+
+// 3. Səhifə yüklənəndə video pleyeri işə salmaq
+document.addEventListener("DOMContentLoaded", function() {
+    const mainVideo = document.getElementById("mainVideo");
+    const lessonItems = document.querySelectorAll(".lesson-item");
+
+    lessonItems.forEach(item => {
+        item.addEventListener("click", function() {
+            const videoUrl = this.getAttribute("data-url");
+            const videoId = getYoutubeID(videoUrl);
+            if (videoId) {
+                mainVideo.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+            }
+            lessonItems.forEach(i => i.classList.remove("active"));
+            this.classList.add("active");
+        });
+    });
+
+    // İlk dərsi və ya kursun əsas videosunu yüklə
+    const firstLesson = document.querySelector(".lesson-item");
+    const courseDefaultVideo = [[${course.videoUrl}]];
+    let initialId = firstLesson ? getYoutubeID(firstLesson.getAttribute("data-url")) : getYoutubeID(courseDefaultVideo);
+    if (initialId) {
+        mainVideo.src = "https://www.youtube.com/embed/" + initialId;
+    }
+});
+
+// 4. LIKE FUNKSİYASI (Yenilənməyən - AJAX)
+function handleLike(courseId, commentId, btn) {
+    // Düyməni dərhal dondur ki, dalbadal basıb sayı süni artırmasınlar
+    btn.disabled = true;
+
+    fetch(`/courses/${courseId}/comment/${commentId}/like`, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Xəta!');
+        return response.json();
+    })
+    .then(newCount => {
+        const countSpan = btn.querySelector('.like-count');
+        if(countSpan) countSpan.innerText = newCount;
+
+        // Vizual effekt: Yaşıl rəng və dolu ikon
+        btn.style.color = "#28a745";
+        const icon = btn.querySelector('i');
+        if(icon) icon.classList.replace('far', 'fas');
+    })
+    .catch(err => {
+        console.error(err);
+        btn.disabled = false; // Xəta olsa düyməni geri qaytar
+    });
+}
+
+// 5. REPLY FUNKSİYASI (Yenilənməyən - AJAX)
+function submitReply(courseId, commentId, event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const text = formData.get('text');
+
+    // API-yə göndəririk
+    fetch(`/courses/${courseId}/comment/reply-ajax?commentId=${commentId}&text=${encodeURIComponent(text)}`, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Yeni cavabı dərhal siyahıya əlavə et
+            const repliesDiv = document.querySelector(`#comment-block-${commentId} .nested-replies`);
+            const newReplyHtml = `
+                <div class="nested-reply bg-light p-2 rounded mb-2" style="display:none;">
+                    <div class="d-flex align-items-center mb-1">
+                        <small class="fw-bold text-dark">Siz (İndi)</small>
+                    </div>
+                    <p class="comment-text small mb-1">${text}</p>
+                    <div class="comment-meta smaller text-muted" style="font-size: 10px;">
+                        <i class="far fa-clock me-1"></i> Bayaq
+                    </div>
+                </div>`;
+
+            repliesDiv.insertAdjacentHTML('beforeend', newReplyHtml);
+
+            // Yeni cavab səliqəli şəkildə görünsün
+            const lastReply = repliesDiv.lastElementChild;
+            lastReply.style.display = 'block';
+
+            // Formu təmizlə və bağla
+            form.reset();
+            const container = document.getElementById('reply-container-' + commentId);
+            container.classList.remove('active');
+        } else {
+            alert("Xəta baş verdi, yenidən yoxlayın.");
+        }
+    })
+    .catch(err => console.error("Reply xətası:", err));
+}
+  </script>
+
+</div>
+</body>
+</html>

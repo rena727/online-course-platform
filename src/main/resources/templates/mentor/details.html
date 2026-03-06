@@ -1,0 +1,170 @@
+
+
+<!DOCTYPE html>
+<html lang="az"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title th:text="${mentor.name} + ' | Mentor Profili'"></title>
+  <style>
+    /* Ümumi dizayn elementləri */
+    .mentor-header-card { background: white; border-radius: 24px; border: 1px solid #e2e8f0; overflow: hidden; margin-top: 20px; }
+    .mentor-cover { height: 150px; background: linear-gradient(135deg, #0d6efd 0%, #002d72 100%); }
+    .mentor-img-detail { width: 160px; height: 160px; object-fit: cover; border: 6px solid white; margin-top: -80px; }
+
+    /* Kurs keçidləri */
+    .course-link-card { transition: 0.3s; text-decoration: none !important; color: inherit !important; display: block; }
+    .course-link-card:hover .p-3 { border-color: #0d6efd !important; background-color: #f0f7ff !important; transform: translateX(5px); }
+    .fw-600 { font-weight: 600; }
+
+    /* Rəylər bölməsi */
+    .reviews-container { max-height: 600px; overflow-y: auto; padding-right: 10px; }
+    .reviews-container::-webkit-scrollbar { width: 5px; }
+    .reviews-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+    /* Ulduz reytinqi */
+    .rating-wrapper { display: flex; flex-direction: row-reverse; justify-content: center; gap: 8px; }
+    .rating-wrapper input { display: none; }
+    .rating-wrapper label { font-size: 2.2rem; color: #e2e8f0; cursor: pointer; transition: 0.2s; margin-bottom: 0; }
+    .rating-wrapper label:hover,
+    .rating-wrapper label:hover ~ label,
+    .rating-wrapper input:checked ~ label { color: #ffc107; }
+
+    /* STICKY CARD DÜZƏLİŞİ */
+    .sticky-sidebar {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 90px; /* Navbarın hündürlüyünə görə buranı tənzimləyirik */
+      z-index: 10;
+      align-self: flex-start; /* Bu vacibdir: sidebarın bütün row boyu uzanmasının qarşısını alır */
+    }
+
+    .review-card {
+      background: white;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .comment-item { transition: 0.3s; border-left: 4px solid #0d6efd; }
+    .comment-item:hover { transform: scale(1.01); }
+  </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+  <div class="container py-4">
+    <div class="mentor-header-card shadow-sm mb-5">
+      <div class="mentor-cover"></div>
+      <div class="px-4 px-md-5 pb-5">
+        <div class="row align-items-end mb-4">
+          <div class="col-md-auto text-center">
+            <img th:src="${mentor.imgUrl != null ? mentor.imgUrl : 'https://via.placeholder.com/160'}"
+                 class="mentor-img-detail rounded-circle shadow" alt="Mentor">
+          </div>
+          <div class="col-md ms-md-3 mt-3 mt-md-0">
+            <h1 class="fw-bold mb-1" th:text="${mentor.name}">Mentor Adı</h1>
+            <p class="text-primary fw-bold fs-5 mb-0" th:text="${mentor.specialty}">Ixtisas</p>
+          </div>
+          <div class="col-md-auto text-end mt-4 mt-md-0">
+            <div class="d-flex gap-2 justify-content-center">
+              <a th:href="${mentor.linkedinUrl}" target="_blank" class="btn btn-outline-primary rounded-pill px-3 border shadow-sm">
+                <i class="fab fa-linkedin me-1"></i> LinkedIn
+              </a>
+              <a th:href="${mentor.gitUrl}" target="_blank" class="btn btn-outline-dark rounded-pill px-3 border shadow-sm">
+                <i class="fab fa-github me-1"></i> GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-lg-8">
+            <div class="mb-5">
+              <h4 class="fw-bold mb-4"><i class="fas fa-book-open text-primary me-2"></i>Tədris etdiyi kurslar</h4>
+              <div class="row g-3">
+                <div class="col-md-6" th:each="c : ${mentor.courses}">
+                  <a th:href="@{/courses/{id}(id=${c.id})}" class="course-link-card">
+                    <div class="p-3 border rounded-3 d-flex align-items-center bg-light shadow-sm">
+                      <i class="fas fa-graduation-cap text-primary me-3 fs-5"></i>
+                      <span class="fw-600" th:text="${c.name}">Kursun Adı</span>
+                    </div>
+                  </a>
+                </div>
+                <div class="col-12" th:if="${#lists.isEmpty(mentor.courses)}">
+                  <div class="p-4 bg-light rounded-3 text-center text-muted fst-italic">
+                    Hələlik aktiv kursu yoxdur.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <h4 class="fw-bold mb-4"><i class="fas fa-star text-warning me-2"></i>Tələbə Rəyləri (<span th:text="${reviews != null ? reviews.size() : 0}">0</span>)</h4>
+              <div class="reviews-container">
+                <div th:if="${reviews == null or reviews.isEmpty()}" class="alert alert-light border text-muted rounded-4 py-4 text-center">
+                  Hələ ki, rəy yazılmayıb. İlk rəyi sən yaz!
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-12 mb-3" th:each="r : ${reviews}">
+                    <div class="card border-0 shadow-sm p-4 bg-white rounded-4 comment-item">
+                      <div class="d-flex align-items-center mb-2">
+                        <div class="w-100">
+                          <div class="d-flex justify-content-between align-items-start">
+                            <h6 class="fw-bold mb-0 text-dark" th:text="${r.userFullName}">İstifadəçi Adı</h6>
+                            <div class="stars text-warning small">
+                              <i class="fas fa-star" th:each="i : ${#numbers.sequence(1, (r.rating != null ? r.rating : 5))}"></i>
+                            </div>
+                          </div>
+                          <small class="text-muted"><i class="fas fa-user-graduate me-1"></i>Tələbə</small>
+                        </div>
+                      </div>
+                      <p class="mb-0 text-dark pt-2 border-top mt-2 lh-base" th:text="${r.comment}">Rəy...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 mt-5 mt-lg-0">
+            <div class="sticky-sidebar">
+              <div class="review-card shadow">
+                <h5 class="fw-bold mb-3 text-center">Mentora Ulduz Ver</h5>
+                <p class="text-muted small text-center mb-4">Təcrübənizi bölüşmək digər tələbələr üçün faydalıdır.</p>
+
+                <form th:action="@{/mentors/rate}" method="post">
+                  <input type="hidden" name="mentorId" th:value="${mentor.id}">
+
+                  <div class="rating-wrapper mb-4">
+                    <input type="radio" id="star5" name="rating" value="5" required /><label for="star5" title="5 ulduz">★</label>
+                    <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 ulduz">★</label>
+                    <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 ulduz">★</label>
+                    <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 ulduz">★</label>
+                    <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 ulduz">★</label>
+                  </div>
+
+                  <div class="mb-3">
+                    <textarea name="comment" class="form-control rounded-4 p-3 shadow-sm"
+                              placeholder="Mentor haqqında fikirləriniz..." rows="4" required></textarea>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary w-100 fw-bold py-3 rounded-pill shadow-sm">
+                    Rəyi Göndər <i class="fas fa-paper-plane ms-2"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+

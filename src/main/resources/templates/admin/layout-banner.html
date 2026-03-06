@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="az"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{admin/admin-layout}"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner & Footer Redaktə</title>
+</head>
+
+<body>
+<div layout:fragment="content" class="container py-5">
+
+    <h2 class="mb-4">Banner və Footer Redaktəsi</h2>
+
+    <form th:action="@{/admin/layout/save}" th:object="${layoutForm}" method="post">
+
+        <div class="mb-4 glass-card p-4">
+            <h4 class="mb-3">Banner Redaktəsi</h4>
+            <input type="hidden" th:field="*{banner.id}">
+
+            <div class="mb-3">
+                <label class="form-label">Banner Başlığı</label>
+                <input type="text" class="form-control" th:field="*{banner.title}" placeholder="Banner başlığı">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Banner Alt Başlıq</label>
+                <input type="text" class="form-control" th:field="*{banner.subTitle}" placeholder="Banner alt başlıq">
+            </div>
+        </div>
+
+        <div class="mb-4 glass-card p-4">
+            <h4 class="mb-3">Footer Redaktəsi</h4>
+            <input type="hidden" th:field="*{foot.id}">
+
+            <div class="mb-3">
+                <label class="form-label">Footer Başlığı</label>
+                <input type="text" class="form-control" th:field="*{foot.title}" placeholder="Footer başlıq">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Instagram URL</label>
+                <input type="text" class="form-control" th:field="*{foot.instagramUrl}" placeholder="Instagram linki">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">LinkedIn URL</label>
+                <input type="text" class="form-control" th:field="*{foot.linkedinUrl}" placeholder="LinkedIn linki">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Facebook URL</label>
+                <input type="text" class="form-control" th:field="*{foot.facebookUrl}" placeholder="Facebook linki">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Yadda saxla</button>
+
+    </form>
+
+</div>
+</body>
+</html>

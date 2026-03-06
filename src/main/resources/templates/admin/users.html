@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+  <title>İstifadəçi Bazası | EduMaster OS</title>
+  <style>
+    .user-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
+    .status-active { background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+    .status-blocked { background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<div layout:fragment="page-title">İstifadəçi İdarəetməsi</div>
+
+<div layout:fragment="content">
+  <div class="glass-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="fw-bold mb-0">Sistemdəki İstifadəçilər</h5>
+      <div class="d-flex gap-2">
+        <input type="text" class="form-control form-control-sm rounded-pill px-3" placeholder="Ad və ya Email...">
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+        <tr class="small text-muted">
+          <th>İSTİFADƏÇİ</th>
+          <th>ROL</th>
+          <th>QEYDİYYAT</th>
+          <th>STATUS</th>
+          <th class="text-end">ƏMƏLİYYAT</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>
+            <div class="d-flex align-items-center">
+              <img src="https://ui-avatars.com/api/?name=User+Example&background=random" class="user-avatar me-2">
+              <div>
+                <div class="small fw-bold">Nihad Əliyev</div>
+                <div class="text-muted" style="font-size: 11px;">nihad@example.com</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge bg-light text-dark border small">Tələbə</span></td>
+          <td class="small text-muted">12.01.2026</td>
+          <td><span class="status-active">Aktiv</span></td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-light" title="Blokla"><i class="fas fa-ban text-danger"></i></button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

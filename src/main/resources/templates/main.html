@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="az" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurslar | EduMaster</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+
+</head>
+<body>
+
+<header class="course-header mb-5">
+    <div class="container text-center">
+        <h1 class="fw-bold mb-3">Təhsil Kataloqu</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="input-group shadow-lg rounded-pill overflow-hidden bg-white px-3 py-1">
+                    <input type="text" id="courseSearch" class="form-control border-0" placeholder="Kurs axtar (məs: SQL)..." onkeyup="searchCourse()">
+                    <span class="p-2 text-primary"><i class="fas fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container mb-4 d-flex justify-content-center gap-2 flex-wrap">
+    <button class="btn btn-white shadow-sm rounded-pill px-4 active" onclick="filterCat('all')">Hamısı</button>
+    <button class="btn btn-white shadow-sm rounded-pill px-4" onclick="filterCat('free')">Pulsuz</button>
+    <button class="btn btn-white shadow-sm rounded-pill px-4" onclick="filterCat('paid')">Ödənişli</button>
+    <button class="btn btn-white shadow-sm rounded-pill px-4" onclick="filterCat('cert')">Sertifikatlı</button>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-4" id="course-grid">
+        <div class="col-lg-4 col-md-6 course-item" data-type="paid cert">
+            <div class="c-card shadow-sm">
+                <img src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=500" class="c-img">
+                <div class="p-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="badge bg-danger">Sertifikatlı</span>
+                        <span class="text-primary fw-bold">15 AZN</span>
+                    </div>
+                    <h5 class="fw-bold c-title">SQL Master dərsləri</h5>
+                    <p class="text-muted small">Sıfırdan Expert səviyyəsinə qədər SQL.</p>
+                    <button onclick="accessCourse('sql', true, 15)" class="btn btn-primary w-100 rounded-pill mt-3">Kursa Daxil Ol</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 course-item" data-type="free">
+            <div class="c-card shadow-sm">
+                <img src="https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=500" class="c-img">
+                <div class="p-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="badge bg-success">Pulsuz</span>
+                        <span class="text-success fw-bold">PULSUZ</span>
+                    </div>
+                    <h5 class="fw-bold c-title">C# Giriş Kursu</h5>
+                    <p class="text-muted small">Backend dünyasına ilk addım.</p>
+                    <button onclick="accessCourse('csharp', false, 0)" class="btn btn-outline-primary w-100 rounded-pill mt-3">İzləyə Başla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="payment-modal" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background: rgba(0,0,0,0.8); z-index: 3000;">
+    <div class="d-flex align-items-center justify-content-center h-100">
+        <div class="card pay-card p-4 shadow-lg">
+            <h4 class="fw-bold text-center mb-4">Ödənişi Tamamla</h4>
+            <div class="mb-3">
+                <label class="small text-muted">Məbləğ: <span id="pay-price" class="fw-bold text-dark">0</span> AZN</label>
+                <input type="text" class="form-control rounded-3 mt-2" placeholder="Kart Nömrəsi (16 rəqəm)">
+            </div>
+            <div class="row g-2 mb-4">
+                <div class="col-6"><input type="text" class="form-control rounded-3" placeholder="MM/YY"></div>
+                <div class="col-6"><input type="text" class="form-control rounded-3" placeholder="CVV"></div>
+            </div>
+            <button onclick="confirmPayment()" class="btn btn-success w-100 py-2 rounded-pill fw-bold">Ödə və Başla</button>
+            <button onclick="closePayment()" class="btn btn-link w-100 mt-2 text-decoration-none text-muted">Ləğv Et</button>
+        </div>
+    </div>
+</div>
+
+<div id="video-panel">
+    <nav class="navbar navbar-light bg-white border-bottom px-4">
+        <button class="btn btn-light rounded-circle" onclick="closeVideoPanel()"><i class="fas fa-arrow-left"></i></button>
+        <span id="active-course-name" class="fw-bold h5 mb-0">Kursun Adı</span>
+        <div class="text-primary"><i class="fas fa-user-graduate me-2"></i>Tələbə Paneli</div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <div class="video-container shadow-lg mb-3">
+                    <iframe id="mainVideo" width="100%" height="100%" src="" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <h3 id="video-title" class="fw-bold">1. Giriş və Quraşdırma</h3>
+                <p class="text-muted">Bu dərsdə biz kursun məqsədləri və lazım olan alətlər haqqında danışacağıq.</p>
+            </div>
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="card-header bg-white py-3 fw-bold border-bottom">Dərs Proqramı</div>
+                    <div class="lesson-list" id="lesson-list-box">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Kurs Məlumatları
+    const courseData = {
+        sql: {
+            name: "SQL Master dərsləri",
+            lessons: [
+                { title: "1. Verilənlər bazası nədir?", url: "https://www.youtube.com/embed/HXV3zeQKqGY" },
+                { title: "2. SELECT sorğuları", url: "https://www.youtube.com/embed/7S_tz1z_5bA" },
+                { title: "3. JOIN əməliyyatları", url: "https://www.youtube.com/embed/9yeOJ0ZMUYw" }
+            ]
+        },
+        csharp: {
+            name: "C# Giriş Kursu",
+            lessons: [
+                { title: "1. C# və .NET Giriş", url: "https://www.youtube.com/embed/GhQdlIFylQ8" },
+                { title: "2. Dəyişənlər və Tiplər", url: "https://www.youtube.com/embed/rav0uOnV-q4" }
+            ]
+        }
+    };
+
+    let currentCourse = null;
+
+    // Kursa Giriş Yoxlaması
+    function accessCourse(id, isPaid, price) {
+        currentCourse = courseData[id];
+        if (isPaid) {
+            document.getElementById('pay-price').innerText = price;
+            document.getElementById('payment-modal').classList.remove('d-none');
+        } else {
+            openVideoPanel();
+        }
+    }
+
+    // Ödəniş Təsdiqi
+    function confirmPayment() {
+        alert("Ödəniş uğurludur! Kurs açıldı.");
+        document.getElementById('payment-modal').classList.add('d-none');
+        openVideoPanel();
+    }
+
+    function closePayment() {
+        document.getElementById('payment-modal').classList.add('d-none');
+    }
+
+    // Video Paneli Açmaq
+    function openVideoPanel() {
+        document.getElementById('video-panel').style.display = 'block';
+        document.getElementById('active-course-name').innerText = currentCourse.name;
+
+        const listBox = document.getElementById('lesson-list-box');
+        listBox.innerHTML = '';
+
+        currentCourse.lessons.forEach((lesson, index) => {
+            listBox.innerHTML += `
+                <div class="lesson-item" onclick="playLesson('${lesson.url}', '${lesson.title}', this)">
+                    <i class="fas fa-play-circle me-2 text-primary"></i> ${lesson.title}
+                </div>
+            `;
+        });
+
+        // İlk dərsi başlat
+        playLesson(currentCourse.lessons[0].url, currentCourse.lessons[0].title, document.querySelector('.lesson-item'));
+    }
+
+    function playLesson(url, title, el) {
+        document.getElementById('mainVideo').src = url;
+        document.getElementById('video-title').innerText = title;
+
+        document.querySelectorAll('.lesson-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function closeVideoPanel() {
+        document.getElementById('video-panel').style.display = 'none';
+        document.getElementById('mainVideo').src = '';
+    }
+
+    // Axtarış Sistemi
+    function searchCourse() {
+        let input = document.getElementById('courseSearch').value.toLowerCase();
+        document.querySelectorAll('.course-item').forEach(item => {
+            let title = item.querySelector('.c-title').innerText.toLowerCase();
+            item.style.display = title.includes(input) ? "block" : "none";
+        });
+    }
+
+    // Kateqoriya Filtri
+    function filterCat(cat) {
+        document.querySelectorAll('.course-item').forEach(item => {
+            const type = item.getAttribute('data-type');
+            if (cat === 'all' || type.includes(cat)) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    }
+</script>
+</body>
+</html>

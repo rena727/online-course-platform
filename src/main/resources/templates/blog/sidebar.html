@@ -1,0 +1,19 @@
+<div th:fragment="sidebar(categories)" class="p-4 bg-white border rounded-4 shadow-sm" xmlns:th="http://www.thymeleaf.org">
+  <h5 class="fw-bold mb-4">
+    <i class="fas fa-th-large me-2 text-primary"></i>Categories
+  </h5>
+
+  <div id="category-filters">
+    <div class="category-item active" data-filter="all">
+      <span class="category-name">All Posts</span>
+      <i class="fas fa-chevron-right small opacity-50"></i>
+    </div>
+
+    <div th:each="cat : ${categories}"
+         class="category-item"
+         th:data-filter="${cat.name}">
+      <span class="category-name" th:text="${cat.name}">Category Name</span>
+      <i class="fas fa-chevron-right small opacity-50"></i>
+    </div>
+  </div>
+</div>

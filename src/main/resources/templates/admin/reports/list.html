@@ -1,0 +1,542 @@
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="az"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{admin/admin-layout}">-->
+<!--<head>-->
+<!--  <title>Şikayətlər | EduMaster OS</title>-->
+
+<!--  <style>-->
+<!--    .glass-card {-->
+<!--      background: #fff;-->
+<!--      border-radius: 18px;-->
+<!--      border: 1px solid #eef1f6;-->
+<!--    }-->
+
+<!--    .table thead th {-->
+<!--      background: #f9fafb;-->
+<!--      font-size: 12px;-->
+<!--      text-transform: uppercase;-->
+<!--      letter-spacing: .6px;-->
+<!--      color: #6b7280;-->
+<!--      padding: 14px 18px;-->
+<!--    }-->
+
+<!--    .table tbody td {-->
+<!--      padding: 18px;-->
+<!--      vertical-align: middle;-->
+<!--    }-->
+
+<!--    .report-row:hover {-->
+<!--      background: #f8fafc;-->
+<!--    }-->
+
+<!--    .status-badge {-->
+<!--      padding: 6px 14px;-->
+<!--      font-size: 12px;-->
+<!--      font-weight: 600;-->
+<!--      border-radius: 999px;-->
+<!--    }-->
+
+<!--    .badge-new {-->
+<!--      background: #fee2e2;-->
+<!--      color: #b91c1c;-->
+<!--    }-->
+
+<!--    .badge-read {-->
+<!--      background: #dcfce7;-->
+<!--      color: #15803d;-->
+<!--    }-->
+
+<!--    .action-btn {-->
+<!--      width: 36px;-->
+<!--      height: 36px;-->
+<!--      border-radius: 10px;-->
+<!--      display: inline-flex;-->
+<!--      align-items: center;-->
+<!--      justify-content: center;-->
+<!--      transition: .2s;-->
+<!--    }-->
+
+<!--    .action-btn:hover {-->
+<!--      transform: translateY(-2px);-->
+<!--      background: #eef2ff;-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+
+<!--<body>-->
+
+<!--<div layout:fragment="page-title">Şikayət və Təkliflər</div>-->
+
+<!--<div layout:fragment="content">-->
+
+<!--  <div class="glass-card shadow-sm mt-3">-->
+
+<!--    <div class="p-4 border-bottom d-flex justify-content-between align-items-center">-->
+<!--      <div>-->
+<!--        <h5 class="fw-bold mb-1">Müraciət Bazası</h5>-->
+<!--        <p class="text-muted small mb-0">Bütün gələn mesajlar</p>-->
+<!--      </div>-->
+<!--      <span class="badge bg-primary rounded-pill px-3 py-2"-->
+<!--            th:text="${reports.size()} + ' mesaj'"></span>-->
+<!--    </div>-->
+
+<!--    <div class="table-responsive">-->
+<!--      <table class="table mb-0 align-middle">-->
+
+<!--        <thead>-->
+<!--        <tr>-->
+<!--          <th>İstifadəçi</th>-->
+<!--          <th>Mövzu</th>-->
+<!--          <th>Tarix</th>-->
+<!--          <th class="text-center">Status</th>-->
+<!--          <th class="text-end">Əməliyyat</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+
+<!--        <tbody>-->
+<!--        <tr th:each="r : ${reports}" class="report-row">-->
+
+<!--          <td>-->
+<!--            <div class="d-flex align-items-center">-->
+<!--              <div class="rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center me-3"-->
+<!--                   style="width:42px;height:42px;">-->
+<!--                <span th:text="${r.fullName.substring(0,1)}"></span>-->
+<!--              </div>-->
+<!--              <div>-->
+<!--                <div class="fw-semibold" th:text="${r.fullName}"></div>-->
+<!--                <small class="text-muted" th:text="${r.email}"></small>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </td>-->
+
+<!--          <td>-->
+<!--            <div class="fw-medium" th:text="${r.subject}"></div>-->
+<!--            <small class="text-muted d-block text-truncate"-->
+<!--                   style="max-width:200px"-->
+<!--                   th:text="${r.message}"></small>-->
+<!--          </td>-->
+
+<!--          <td>-->
+<!--            <small class="text-muted"-->
+<!--                   th:text="${#temporals.format(r.createdAt,'dd.MM.yyyy HH:mm')}"></small>-->
+<!--          </td>-->
+
+<!--          <td class="text-center">-->
+<!--            <span th:if="${!r.isRead}" class="status-badge badge-new">Yeni</span>-->
+<!--            <span th:if="${r.isRead}" class="status-badge badge-read">Baxılıb</span>-->
+<!--          </td>-->
+
+<!--          <td class="text-end">-->
+<!--            <button class="btn action-btn border"-->
+<!--                    data-bs-toggle="modal"-->
+<!--                    th:data-bs-target="'#msgModal' + ${r.id}">-->
+<!--              <i class="fa-solid fa-eye"></i>-->
+<!--            </button>-->
+
+<!--            <form th:action="@{/admin/reports/delete/{id}(id=${r.id})}"-->
+<!--                  method="post"-->
+<!--                  class="d-inline"-->
+<!--                  onsubmit="return confirm('Silinsin?')">-->
+<!--              <button class="btn action-btn border text-danger">-->
+<!--                <i class="fa-solid fa-trash"></i>-->
+<!--              </button>-->
+<!--            </form>-->
+<!--          </td>-->
+
+<!--        </tr>-->
+<!--        </tbody>-->
+
+<!--      </table>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; MODALS &ndash;&gt;-->
+<!--  <div th:each="r : ${reports}">-->
+<!--    <div class="modal fade" th:id="'msgModal' + ${r.id}" tabindex="-1">-->
+<!--      <div class="modal-dialog modal-dialog-centered modal-lg">-->
+<!--        <div class="modal-content rounded-4 border-0">-->
+<!--          <div class="modal-header">-->
+<!--            <h5 class="fw-bold">Mesaj Detalı</h5>-->
+<!--            <button class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--          </div>-->
+
+<!--          <div class="modal-body">-->
+<!--            <p><strong>Ad:</strong> <span th:text="${r.fullName}"></span></p>-->
+<!--            <p><strong>Email:</strong> <span th:text="${r.email}"></span></p>-->
+
+<!--            <div class="bg-light p-3 rounded-3 mb-3">-->
+<!--              <p class="mb-0" th:text="${r.message}"></p>-->
+<!--            </div>-->
+
+<!--            <form th:action="@{/admin/reports/reply/{id}(id=${r.id})}" method="post">-->
+<!--              <textarea name="replyMessage"-->
+<!--                        class="form-control mb-3"-->
+<!--                        placeholder="Cavab yaz..."-->
+<!--                        required></textarea>-->
+<!--              <button class="btn btn-primary w-100 rounded-pill">-->
+<!--                Cavabı Göndər-->
+<!--              </button>-->
+<!--            </form>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="az"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+  <title>Şikayətlər | EduMaster OS</title>
+
+  <style>
+    body {
+      background: #f6f7fb;
+    }
+
+    .soft-card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 0;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .soft-header {
+      padding: 28px 32px;
+      border-bottom: 1px solid #f0f1f5;
+    }
+
+    .soft-header h5 {
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+
+    .soft-header p {
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    .count-pill {
+      background: #eef2ff;
+      color: #4f46e5;
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0 12px;
+      padding: 16px 24px 24px;
+    }
+
+    thead th {
+      font-size: 12px;
+      color: #9ca3af;
+      font-weight: 500;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+
+    tbody tr {
+      background: #fbfbfd;
+      border-radius: 18px;
+      transition: all .25s ease;
+    }
+
+    tbody tr:hover {
+      background: #f5f6ff;
+      transform: translateY(-2px);
+    }
+
+    tbody td {
+      padding: 18px 16px;
+      vertical-align: middle;
+    }
+
+    tbody tr td:first-child {
+      border-radius: 18px 0 0 18px;
+    }
+
+    tbody tr td:last-child {
+      border-radius: 0 18px 18px 0;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c7d2fe, #e0e7ff);
+      color: #4338ca;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .name {
+      font-weight: 500;
+      color: #111827;
+    }
+
+    .email {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .subject {
+      font-weight: 500;
+      color: #1f2937;
+    }
+
+    .preview {
+      font-size: 13px;
+      color: #9ca3af;
+      max-width: 220px;
+    }
+
+    .status {
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .new {
+      background: #fff1f2;
+      color: #be123c;
+    }
+
+    .read {
+      background: #ecfdf5;
+      color: #047857;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: none;
+      background: #f1f3ff;
+      color: #4f46e5;
+      transition: .2s;
+    }
+
+    .icon-btn:hover {
+      background: #e0e7ff;
+      transform: translateY(-2px);
+    }
+
+    .icon-btn.delete {
+      background: #fff1f2;
+      color: #be123c;
+    }
+
+    .icon-btn.delete:hover {
+      background: #ffe4e6;
+    }
+
+    /* MODAL */
+    .modal-content {
+      border-radius: 24px;
+      border: none;
+      box-shadow: 0 20px 40px rgba(0,0,0,.15);
+    }
+
+    .modal-header {
+      border-bottom: none;
+      padding: 28px 28px 0;
+    }
+
+    .modal-body {
+      padding: 20px 28px 28px;
+    }
+
+    .soft-box {
+      background: #f7f8ff;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    textarea {
+      border-radius: 16px !important;
+      border: 1px solid #e5e7eb;
+    }
+
+    textarea:focus {
+      box-shadow: none;
+      border-color: #a5b4fc;
+    }
+
+    .send-btn {
+      background: linear-gradient(135deg, #6366f1, #818cf8);
+      border: none;
+      border-radius: 999px;
+      padding: 12px;
+      font-weight: 500;
+    }
+
+    .soft-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 28px 0 32px;
+}
+
+.soft-page {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #f1f3ff;
+  color: #4f46e5;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: .2s ease;
+}
+
+.soft-page:hover {
+  background: #e0e7ff;
+  transform: translateY(-2px);
+}
+
+.soft-page.active {
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  color: white;
+  pointer-events: none;
+}
+
+.soft-page.disabled {
+  opacity: .4;
+  pointer-events: none;
+}
+
+  </style>
+</head>
+
+<body>
+
+<div layout:fragment="page-title">Şikayət və Təkliflər</div>
+
+<div layout:fragment="content">
+
+  <div class="soft-card mt-4">
+
+    <div class="soft-header d-flex justify-content-between align-items-center">
+      <div>
+        <h5 class="mb-1">Müraciətlər</h5>
+        <p class="mb-0">İstifadəçilərdən gələn mesajlar</p>
+      </div>
+      <span class="count-pill" th:text="${reports.size()} + ' mesaj'"></span>
+    </div>
+
+    <table class="w-100">
+      <thead>
+      <tr>
+        <th>İstifadəçi</th>
+        <th>Mövzu</th>
+        <th>Tarix</th>
+        <th class="text-center">Status</th>
+        <th class="text-end">Əməliyyat</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr th:each="r : ${reports}">
+        <td>
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar" th:text="${r.fullName.substring(0,1)}"></div>
+            <div>
+              <div class="name" th:text="${r.fullName}"></div>
+              <div class="email" th:text="${r.email}"></div>
+            </div>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject" th:text="${r.subject}"></div>
+          <div class="preview text-truncate" th:text="${r.message}"></div>
+        </td>
+
+        <td class="text-muted small"
+            th:text="${#temporals.format(r.createdAt,'dd.MM.yyyy HH:mm')}"></td>
+
+        <td class="text-center">
+          <span th:if="${!r.isRead}" class="status new">yeni</span>
+          <span th:if="${r.isRead}" class="status read">oxunub</span>
+        </td>
+
+        <td class="text-end">
+          <button class="icon-btn"
+                  data-bs-toggle="modal"
+                  th:data-bs-target="'#msgModal' + ${r.id}">
+            <i class="fa-regular fa-eye"></i>
+          </button>
+
+          <form th:action="@{/admin/reports/delete/{id}(id=${r.id})}"
+                method="post"
+                class="d-inline"
+                onsubmit="return confirm('Silinsin?')">
+            <button class="icon-btn delete">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODALS -->
+  <div th:each="r : ${reports}">
+    <div class="modal fade" th:id="'msgModal' + ${r.id}" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="fw-medium">Mesaj Detalı</h5>
+            <button class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body">
+            <p class="mb-1"><strong th:text="${r.fullName}"></strong></p>
+            <p class="text-muted small mb-3" th:text="${r.email}"></p>
+
+            <div class="soft-box mb-4" th:text="${r.message}"></div>
+
+            <form th:action="@{/admin/reports/reply/{id}(id=${r.id})}" method="post">
+              <textarea name="replyMessage"
+                        class="form-control mb-3"
+                        rows="3"
+                        placeholder="yumşaq bir cavab yaz…"
+                        required></textarea>
+              <button class="btn send-btn w-100 text-white">
+                cavabı göndər
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
+

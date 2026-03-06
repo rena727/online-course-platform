@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="az"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>EduMaster | İmtahan Portalı</title>
+    <style>
+        .exam-header {
+            background: linear-gradient(135deg, #0d6efd, #0040a1);
+            color: white; padding: 60px 0;
+            border-radius: 0 0 40px 40px;
+            margin-top: -20px; /* Layout navbarı ilə bitişik olması üçün */
+        }
+        .exam-card-pro { background: white; border-radius: 25px; overflow: hidden; transition: 0.3s; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .exam-card-pro:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card-img-top { height: 200px; object-fit: cover; }
+        .payment-modal-content { border-radius: 30px; border: none; padding: 25px; }
+        .card-input { border-radius: 12px; padding: 12px; border: 2px solid #eee; margin-bottom: 15px; width: 100%; }
+    </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <header class="exam-header shadow-sm mb-5 text-center">
+        <div class="container">
+            <h2 class="fw-bold display-5">İmtahan Portalı</h2>
+            <p class="opacity-75">Biliklərinizi yoxlayın və sertifikat qazanın!</p>
+        </div>
+    </header>
+
+    <div class="container pb-5">
+        <div class="row g-4" id="exam-container">
+            <div class="col-lg-4 col-md-6 exam-item" th:each="exam : ${exams}">
+                <div class="exam-card-pro shadow-sm h-100">
+                    <img th:src="${exam.imageUrl}" class="card-img-top">
+                    <div class="p-4">
+                        <span class="badge rounded-pill mb-2 px-3 py-2"
+                              th:classappend="${exam.price == '0' ? 'bg-success' : 'bg-danger'}"
+                              th:text="${exam.price == '0' ? 'PULSUZ' : 'PRO'}"></span>
+                        <h5 class="exam-title fw-bold" th:text="${exam.name}">Exam Name</h5>
+                        <p class="small text-muted mb-3">
+                            <i class="far fa-question-circle me-1"></i> <span th:text="${exam.questionCount}">0</span> Sual
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-primary fw-bold mb-0" th:text="${exam.price + ' AZN'}">0 AZN</span>
+
+                            <div th:with="results=${user.examResults.?[exam.id == __${exam.id}__]}">
+                                <button th:if="${!results.isEmpty() and results[0].score >= 50}"
+                                        class="btn btn-secondary disabled rounded-pill px-4 fw-bold">
+                                    <i class="fas fa-check-circle me-1"></i> Tamamlanıb
+                                </button>
+
+                                <button th:if="${results.isEmpty() or results[0].score < 50}"
+                                        th:onclick="checkAccess([[${exam.id}]], [[${exam.price}]])"
+                                        class="btn rounded-pill px-4 fw-bold"
+                                        th:classappend="${exam.price == '0' ? 'btn-outline-primary' : 'btn-primary'}">
+                                    [[${exam.price == '0' ? 'Başla' : 'Satın Al'}]]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content payment-modal-content shadow-lg">
+                <h4 class="fw-bold mb-4 text-center text-primary">Kart Məlumatları</h4>
+                <div class="mb-3">
+                    <input type="text" id="cardNum" class="card-input" placeholder="Kart Nömrəsi (16 rəqəm)">
+                </div>
+                <div class="row g-2">
+                    <div class="col-6"><input type="text" id="cardExp" class="card-input" placeholder="MM/YY"></div>
+                    <div class="col-6"><input type="text" id="cardCvv" class="card-input" placeholder="CVV"></div>
+                </div>
+                <input type="hidden" id="pendingExamId">
+                <button onclick="confirmPayment()" class="btn btn-success w-100 rounded-pill py-3 fw-bold mt-2">Təsdiqlə və Başla</button>
+                <button class="btn btn-link w-100 mt-2 text-muted" data-bs-dismiss="modal">Ləğv et</button>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        function checkAccess(id, price) {
+            if (parseFloat(price) > 0) {
+                document.getElementById('pendingExamId').value = id;
+                new bootstrap.Modal(document.getElementById('paymentModal')).show();
+            } else {
+                window.location.href = "/exams/" + id + "/quiz";
+            }
+        }
+
+        function confirmPayment() {
+            const id = document.getElementById('pendingExamId').value;
+            const card = document.getElementById('cardNum').value.replace(/\s/g, '');
+            const exp = document.getElementById('cardExp').value;
+            const cvv = document.getElementById('cardCvv').value;
+
+            if(card.length === 16 && cvv.length === 3 && exp.includes('/')) {
+                alert("Ödəniş uğurla tamamlandı! İmtahan başlayır...");
+                window.location.href = "/exams/" + id + "/quiz";
+            } else {
+                alert("Zəhmət olmasa kart məlumatlarını düzgün doldurun!");
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

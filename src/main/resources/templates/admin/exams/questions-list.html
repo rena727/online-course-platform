@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{admin/admin-layout}">
+<head><title>Suallar | EduMaster OS</title></head>
+<body>
+<div layout:fragment="page-title" th:text="${exam.name + ' - Suallar'}"></div>
+<div layout:fragment="content">
+  <div class="glass-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5>Sualların Siyahısı</h5>
+      <div>
+        <a th:href="@{/admin/exams}" class="btn btn-secondary me-2">Geri qayıt</a>
+        <a th:href="@{/admin/exams/{id}/questions/create(id=${exam.id})}" class="btn btn-primary">
+          <i class="fas fa-plus me-1"></i> Yeni Sual
+        </a>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+        <tr>
+          <th>Sual</th>
+          <th>A</th> <th>B</th> <th>C</th> <th>D</th>
+          <th>Düzgün</th>
+          <th class="text-end">Sil</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="q : ${questions}">
+          <td th:text="${q.content}">Sual mətni</td>
+          <td th:text="${q.optionA}"></td> <td th:text="${q.optionB}"></td>
+          <td th:text="${q.optionC}"></td> <td th:text="${q.optionD}"></td>
+          <td><span class="badge bg-success" th:text="${q.correctIndex}"></span></td>
+          <td class="text-end">
+            <form th:action="@{/admin/exams/{eId}/questions/delete/{id}(eId=${exam.id}, id=${q.id})}" method="post">
+              <button type="submit" class="btn btn-sm btn-light text-danger" onclick="return confirm('Silinsin?')">
+                <i class="fas fa-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

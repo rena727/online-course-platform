@@ -1,0 +1,180 @@
+<!--&lt;!&ndash;<!DOCTYPE html>&ndash;&gt;-->
+<!--&lt;!&ndash;<html xmlns:th="http://www.thymeleaf.org"&ndash;&gt;-->
+<!--&lt;!&ndash;      th:replace="~{layouts/mentor_layout :: layout(~{::content})}">&ndash;&gt;-->
+
+<!--&lt;!&ndash;<div th:fragment="content">&ndash;&gt;-->
+
+<!--&lt;!&ndash;  <div class="d-flex justify-content-between align-items-center mb-4">&ndash;&gt;-->
+<!--&lt;!&ndash;    <div>&ndash;&gt;-->
+<!--&lt;!&ndash;      <h3 class="fw-bold mb-1">Bildirişlər</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;      <p class="text-muted small">Admin tərəfindən göndərilən mesajlar</p>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <form th:if="${unreadCount > 0}"&ndash;&gt;-->
+<!--&lt;!&ndash;          th:action="@{/notifications/read-all}"&ndash;&gt;-->
+<!--&lt;!&ndash;          method="post">&ndash;&gt;-->
+<!--&lt;!&ndash;      <button type="submit" class="btn btn-indigo">&ndash;&gt;-->
+<!--&lt;!&ndash;        <i class="fas fa-check-double me-2"></i> Hamısını oxundu et&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+<!--&lt;!&ndash;    </form>&ndash;&gt;-->
+<!--&lt;!&ndash;  </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;  <div class="card border-0 shadow-sm rounded-4">&ndash;&gt;-->
+<!--&lt;!&ndash;    <div class="card-body p-0">&ndash;&gt;-->
+
+<!--&lt;!&ndash;      <div th:each="note : ${notifications}"&ndash;&gt;-->
+<!--&lt;!&ndash;           class="p-4 border-bottom"&ndash;&gt;-->
+<!--&lt;!&ndash;           th:classappend="${!note.read} ? 'border-start border-4 border-primary' : 'opacity-75'">&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <div class="d-flex justify-content-between align-items-start">&ndash;&gt;-->
+<!--&lt;!&ndash;          <div>&ndash;&gt;-->
+<!--&lt;!&ndash;            <h6 class="fw-bold" th:text="${note.title}">Başlıq</h6>&ndash;&gt;-->
+<!--&lt;!&ndash;            <p class="mb-1" th:text="${note.message}">Mesaj</p>&ndash;&gt;-->
+<!--&lt;!&ndash;            <small class="text-muted"&ndash;&gt;-->
+<!--&lt;!&ndash;                   th:text="${#temporals.format(note.createdAt,'dd.MM.yyyy HH:mm')}">&ndash;&gt;-->
+<!--&lt;!&ndash;            </small>&ndash;&gt;-->
+<!--&lt;!&ndash;          </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;          <form th:action="@{/notifications/delete/{id}(id=${note.id})}"&ndash;&gt;-->
+<!--&lt;!&ndash;                method="post">&ndash;&gt;-->
+<!--&lt;!&ndash;            <button type="submit" class="btn btn-link text-danger p-0">&ndash;&gt;-->
+<!--&lt;!&ndash;              <i class="fas fa-trash"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;            </button>&ndash;&gt;-->
+<!--&lt;!&ndash;          </form>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;      <div th:if="${#lists.isEmpty(notifications)}"&ndash;&gt;-->
+<!--&lt;!&ndash;           class="text-center py-5 text-muted">&ndash;&gt;-->
+<!--&lt;!&ndash;        <i class="fas fa-bell-slash fa-2x mb-2"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;        <p class="mb-0">Bildiriş yoxdur</p>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;  </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org"-->
+<!--      th:replace="~{layouts/mentor_layout :: layout(~{::content})}">-->
+<!--<head>-->
+<!--  <title>Bildirişlər</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div th:fragment="content">-->
+<!--  <div class="d-flex justify-content-between align-items-center mb-4">-->
+<!--    <div>-->
+<!--      <h4 class="fw-bold mb-1">Bildirişlər</h4>-->
+<!--      <p class="text-muted small mb-0">Admin tərəfindən sizə göndərilən cavablar</p>-->
+<!--    </div>-->
+
+<!--    <form th:if="${unreadCount > 0}" th:action="@{/notifications/read-all}" method="post">-->
+<!--      <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill px-3">-->
+<!--        <i class="fas fa-check-double me-1"></i> Hamısını oxundu et-->
+<!--      </button>-->
+<!--    </form>-->
+<!--  </div>-->
+
+<!--  <div class="card border-0 shadow-sm rounded-4 bg-white">-->
+<!--    <div class="card-body p-0">-->
+<!--      <div th:each="note : ${notifications}"-->
+<!--           class="p-4 border-bottom position-relative"-->
+<!--           th:style="${!note.isRead} ? 'border-left: 4px solid #6366f1; background-color: #fff;' : 'background-color: #f8fafc; opacity: 0.7;'">-->
+
+<!--        <div class="d-flex justify-content-between align-items-start">-->
+<!--          <div class="d-flex gap-3">-->
+<!--            <div class="text-primary mt-1">-->
+<!--              <i class="fas fa-bell"></i>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--              <h6 class="fw-bold mb-1" th:text="${note.title}">Başlıq</h6>-->
+<!--              <p class="text-muted mb-2 small" th:text="${note.message}">Mesaj mətni...</p>-->
+<!--              <span class="badge bg-light text-muted fw-normal" style="font-size: 10px;" th:if="${note.createdAt != null}">-->
+<!--                                <i class="far fa-clock me-1"></i>-->
+<!--                                <span th:text="${#temporals.format(note.createdAt, 'dd.MM.yyyy HH:mm')}"></span>-->
+<!--                            </span>-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--          <form th:action="@{/notifications/delete/{id}(id=${note.id})}" method="post">-->
+<!--            <button type="submit" class="btn btn-link text-danger p-0 shadow-none border-0">-->
+<!--              <i class="fas fa-trash-alt"></i>-->
+<!--            </button>-->
+<!--          </form>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div th:if="${#lists.isEmpty(notifications)}" class="p-5 text-center">-->
+<!--        <i class="fas fa-bell-slash fa-3x text-muted mb-3 opacity-25"></i>-->
+<!--        <p class="text-muted mb-0">Heç bir bildirişiniz yoxdur.</p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/mentor_layout :: layout(~{::content})}">
+
+<div th:fragment="content">
+
+  <!-- Başlıq və “Hamısını oxundu et” düyməsi -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="fw-bold mb-1">Bildirişlər</h4>
+      <p class="text-muted small mb-0">Admin tərəfindən sizə göndərilən bildirişlər</p>
+    </div>
+
+    <form th:if="${unreadCount > 0}" th:action="@{/mentor/notifications/read-all}" method="post">
+      <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+        <i class="fas fa-check-double me-1"></i> Hamısını oxundu et
+      </button>
+    </form>
+  </div>
+
+  <!-- Bildiriş kartları -->
+  <div class="card border-0 shadow-sm rounded-4 bg-white">
+    <div class="card-body p-0">
+
+      <div th:each="note : ${notifications}"
+           class="p-4 border-bottom position-relative d-flex justify-content-between align-items-start"
+           th:style="${!note.read} ? 'border-left: 4px solid #6366f1; background-color: #fff;' : 'background-color: #f8fafc; opacity: 0.7;'">
+
+        <div class="d-flex gap-3">
+          <div class="text-primary mt-1">
+            <i class="fas fa-bell"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-1" th:text="${note.title}">Başlıq</h6>
+            <p class="text-muted mb-2 small" th:text="${note.message}">Mesaj...</p>
+            <small class="text-muted" th:if="${note.createdAt != null}">
+              <i class="far fa-clock me-1"></i>
+              <span th:text="${#temporals.format(note.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+            </small>
+          </div>
+        </div>
+
+        <!-- Silmək düyməsi -->
+        <form th:action="@{/mentor/notifications/delete/{id}(id=${note.id})}" method="post">
+          <button type="submit" class="btn btn-link text-danger p-0 shadow-none border-0">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Əgər bildiriş yoxdursa -->
+      <div th:if="${#lists.isEmpty(notifications)}" class="p-5 text-center">
+        <i class="fas fa-bell-slash fa-3x text-muted mb-3 opacity-25"></i>
+        <p class="text-muted mb-0">Heç bir bildirişiniz yoxdur.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!--</body>-->
+<!--</html>-->

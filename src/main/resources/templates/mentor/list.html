@@ -1,0 +1,323 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="az" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>EduMaster | Peşəkar Mentorlar</title>-->
+
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">-->
+<!--  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">-->
+
+<!--  <style>-->
+<!--    :root {-->
+<!--      &#45;&#45;primary: #0d6efd;-->
+<!--      &#45;&#45;dark-bg: #0f172a;-->
+<!--      &#45;&#45;card-border: #e2e8f0;-->
+<!--      &#45;&#45;text-main: #1e293b;-->
+<!--      &#45;&#45;text-muted: #64748b;-->
+<!--    }-->
+
+<!--    body {-->
+<!--      background-color: #f8fafc;-->
+<!--      font-family: 'Plus Jakarta Sans', sans-serif;-->
+<!--      color: var(&#45;&#45;text-main);-->
+<!--    }-->
+
+<!--    .page-header {-->
+<!--      background: white;-->
+<!--      padding: 20px 0;-->
+<!--      border-bottom: 1px solid var(&#45;&#45;card-border);-->
+<!--      margin-bottom: 40px;-->
+<!--    }-->
+
+<!--    .back-link {-->
+<!--      color: var(&#45;&#45;text-muted);-->
+<!--      text-decoration: none;-->
+<!--      font-weight: 600;-->
+<!--      font-size: 0.9rem;-->
+<!--      transition: 0.3s;-->
+<!--    }-->
+
+<!--    .back-link:hover { color: var(&#45;&#45;primary); }-->
+
+<!--    .mentor-card {-->
+<!--      background: white;-->
+<!--      border: 1px solid var(&#45;&#45;card-border);-->
+<!--      border-radius: 16px;-->
+<!--      padding: 30px;-->
+<!--      transition: all 0.3s ease;-->
+<!--      height: 100%;-->
+<!--      position: relative;-->
+<!--    }-->
+
+<!--    .mentor-card:hover {-->
+<!--      border-color: var(&#45;&#45;primary);-->
+<!--      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);-->
+<!--      transform: translateY(-5px);-->
+<!--    }-->
+
+<!--    .img-box {-->
+<!--      width: 100px;-->
+<!--      height: 100px;-->
+<!--      margin: 0 auto 20px;-->
+<!--      border-radius: 20px;-->
+<!--      overflow: hidden;-->
+<!--      background: #f1f5f9;-->
+<!--    }-->
+
+<!--    .img-box img {-->
+<!--      width: 100%;-->
+<!--      height: 100%;-->
+<!--      object-fit: cover;-->
+<!--    }-->
+
+<!--    .mentor-name {-->
+<!--      font-weight: 800;-->
+<!--      font-size: 1.25rem;-->
+<!--      margin-bottom: 5px;-->
+<!--    }-->
+
+<!--    .mentor-role {-->
+<!--      color: var(&#45;&#45;primary);-->
+<!--      font-weight: 600;-->
+<!--      font-size: 0.85rem;-->
+<!--      text-transform: uppercase;-->
+<!--      letter-spacing: 1px;-->
+<!--      margin-bottom: 15px;-->
+<!--      display: block;-->
+<!--    }-->
+
+<!--    .rating-section {-->
+<!--      background: #f8fafc;-->
+<!--      padding: 8px 12px;-->
+<!--      border-radius: 12px;-->
+<!--      display: inline-block;-->
+<!--    }-->
+
+<!--    .social-links {-->
+<!--      margin-top: 25px;-->
+<!--      padding-top: 20px;-->
+<!--      border-top: 1px solid #f1f5f9;-->
+<!--      display: flex;-->
+<!--      justify-content: center;-->
+<!--      gap: 15px;-->
+<!--      position: relative;-->
+<!--      z-index: 5;-->
+<!--    }-->
+
+<!--    .s-link {-->
+<!--      color: var(&#45;&#45;text-muted);-->
+<!--      font-size: 1.2rem;-->
+<!--      transition: 0.3s;-->
+<!--      text-decoration: none;-->
+<!--    }-->
+
+<!--    .s-link:hover { color: var(&#45;&#45;primary); transform: scale(1.1); }-->
+
+<!--    .btn-details {-->
+<!--      background: var(&#45;&#45;dark-bg);-->
+<!--      color: white;-->
+<!--      border: none;-->
+<!--      padding: 12px 20px;-->
+<!--      border-radius: 10px;-->
+<!--      font-weight: 600;-->
+<!--      width: 100%;-->
+<!--      margin-top: 20px;-->
+<!--      transition: 0.3s;-->
+<!--    }-->
+
+<!--    .mentor-card:hover .btn-details {-->
+<!--      background: var(&#45;&#45;primary);-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<header class="page-header text-center">-->
+<!--  <div class="container d-flex justify-content-between align-items-center">-->
+<!--    <nav>-->
+<!--      <a th:href="@{/}" class="back-link">-->
+<!--        <i class="fas fa-arrow-left me-2"></i> Ana Səhifəyə Qayıt-->
+<!--      </a>-->
+<!--    </nav>-->
+<!--    <span class="fw-bold text-primary">EDUMASTER</span>-->
+<!--  </div>-->
+<!--</header>-->
+
+<!--<div class="container mb-5">-->
+<!--  <div class="row mb-5">-->
+<!--    <div class="col-lg-6">-->
+<!--      <h1 class="fw-800 display-5">Bizim Mentorlar</h1>-->
+<!--      <p class="text-muted">Sahəsində mütəxəssis olan mentorlardan öyrənin və karyeranızı qurun.</p>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div class="row g-4">-->
+<!--    <div class="col-lg-4 col-md-6" th:each="m : ${mentors}">-->
+<!--      <div class="mentor-card text-center">-->
+
+<!--        <a th:href="@{/mentors/{id}(id=${m.id})}" class="stretched-link"></a>-->
+
+<!--        <div class="img-box">-->
+<!--          <img th:src="${m.imgUrl}" alt="Mentor">-->
+<!--        </div>-->
+
+<!--        <span class="mentor-role" th:text="${m.specialty}">Ixtisas</span>-->
+<!--        <h3 class="mentor-name" th:text="${m.name}">Ad Soyad</h3>-->
+
+<!--&lt;!&ndash;        <div class="rating-section mt-2 mb-2">&ndash;&gt;-->
+<!--&lt;!&ndash;          <div class="stars mb-1">&ndash;&gt;-->
+<!--&lt;!&ndash;            <th:block th:each="i : ${#numbers.sequence(1, 5)}">&ndash;&gt;-->
+<!--&lt;!&ndash;              <i th:class="${m.getAverageRating() >= i} ? 'fas fa-star text-warning' : 'far fa-star text-muted'"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;            </th:block>&ndash;&gt;-->
+<!--&lt;!&ndash;          </div>&ndash;&gt;-->
+<!--&lt;!&ndash;          <span class="fw-bold" style="font-size: 0.9rem;" th:text="${m.getAverageRating()}">0.0</span>&ndash;&gt;-->
+<!--&lt;!&ndash;          <span class="text-muted" style="font-size: 0.8rem;"&ndash;&gt;-->
+<!--&lt;!&ndash;                th:text="${m.reviews != null ? '(' + m.reviews.size() + ' rəy)' : '(0 rəy)'}">&ndash;&gt;-->
+<!--&lt;!&ndash;            (0 rəy)&ndash;&gt;-->
+<!--&lt;!&ndash;          </span>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+
+
+<!--        <div class="rating-section mt-2 mb-2">-->
+<!--          <div class="stars mb-1">-->
+<!--            <th:block th:if="${m.getAverageRating() != null and m.getAverageRating() > 0}" th:each="i : ${#numbers.sequence(1, 5)}">-->
+<!--              <i th:class="${m.getAverageRating() >= i} ? 'fas fa-star text-warning' : 'far fa-star text-muted'"></i>-->
+<!--            </th:block>-->
+<!--            <th:block th:if="${m.getAverageRating() == null or m.getAverageRating() == 0}">-->
+<!--              <i class="far fa-star text-muted" th:each="i : ${#numbers.sequence(1, 5)}"></i>-->
+<!--            </th:block>-->
+<!--          </div>-->
+<!--          <span class="fw-bold" style="font-size: 0.9rem;"-->
+<!--                th:text="${m.getAverageRating() != null ? m.getAverageRating() : '0.0'}">0.0</span>-->
+<!--          <span class="text-muted" style="font-size: 0.8rem;"-->
+<!--                th:text="${m.reviews != null ? '(' + m.reviews.size() + ' rəy)' : '(0 rəy)'}">-->
+<!--    (0 rəy)-->
+<!--  </span>-->
+<!--        </div>-->
+<!--        <div class="social-links">-->
+<!--          <a th:href="${m.linkedinUrl}" class="s-link" target="_blank"><i class="fab fa-linkedin"></i></a>-->
+<!--          <a th:href="${m.gitUrl}" class="s-link" target="_blank"><i class="fab fa-github"></i></a>-->
+<!--        </div>-->
+
+<!--        <button class="btn-details">PROFİLƏ BAX</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div> <footer class="py-5 mt-5 text-center text-muted border-top">-->
+<!--  <p>&copy; 2026 EduMaster Təhsil Portalı</p>-->
+<!--</footer>-->
+
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="az"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>EduMaster | Peşəkar Mentorlar</title>
+  <style>
+    :root {
+        --primary: #0d6efd;
+        --dark-bg: #0f172a;
+        --card-border: #e2e8f0;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+    }
+    .mentor-card {
+        background: white;
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 30px;
+        transition: all 0.3s ease;
+        height: 100%;
+        position: relative;
+    }
+    .mentor-card:hover {
+        border-color: var(--primary);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        transform: translateY(-5px);
+    }
+    .img-box {
+        width: 100px; height: 100px;
+        margin: 0 auto 20px; border-radius: 20px;
+        overflow: hidden; background: #f1f5f9;
+    }
+    .img-box img { width: 100%; height: 100%; object-fit: cover; }
+    .mentor-name { font-weight: 800; font-size: 1.25rem; margin-bottom: 5px; }
+    .mentor-role {
+        color: var(--primary); font-weight: 600; font-size: 0.85rem;
+        text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: block;
+    }
+    .rating-section { background: #f8fafc; padding: 8px 12px; border-radius: 12px; display: inline-block; }
+    .social-links {
+        margin-top: 25px; padding-top: 20px; border-top: 1px solid #f1f5f9;
+        display: flex; justify-content: center; gap: 15px; position: relative; z-index: 5;
+    }
+    .s-link { color: var(--text-muted); font-size: 1.2rem; transition: 0.3s; text-decoration: none; }
+    .s-link:hover { color: var(--primary); transform: scale(1.1); }
+    .btn-details {
+        background: var(--dark-bg); color: white; border: none;
+        padding: 12px 20px; border-radius: 10px; font-weight: 600;
+        width: 100%; margin-top: 20px; transition: 0.3s;
+    }
+    .mentor-card:hover .btn-details { background: var(--primary); }
+  </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+  <div class="container py-5">
+    <div class="row mb-5">
+      <div class="col-lg-6">
+        <h1 class="fw-bold display-5">Bizim Mentorlar</h1>
+        <p class="text-muted">Sahəsində mütəxəssis olan mentorlardan öyrənin və karyeranızı qurun.</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6" th:each="m : ${mentors}">
+        <div class="mentor-card text-center shadow-sm">
+          <a th:href="@{/mentors/{id}(id=${m.id})}" class="stretched-link"></a>
+
+          <div class="img-box">
+            <img th:src="${m.imgUrl != null ? m.imgUrl : 'https://via.placeholder.com/100'}" alt="Mentor">
+          </div>
+
+          <span class="mentor-role" th:text="${m.specialty}">Ixtisas</span>
+          <h3 class="mentor-name" th:text="${m.name}">Ad Soyad</h3>
+
+          <div class="rating-section mt-2 mb-2">
+            <div class="stars mb-1">
+              <th:block th:if="${m.getAverageRating() != null and m.getAverageRating() > 0}" th:each="i : ${#numbers.sequence(1, 5)}">
+                <i th:class="${m.getAverageRating() >= i} ? 'fas fa-star text-warning' : 'far fa-star text-muted'"></i>
+              </th:block>
+              <th:block th:if="${m.getAverageRating() == null or m.getAverageRating() == 0}">
+                <i class="far fa-star text-muted" th:each="i : ${#numbers.sequence(1, 5)}"></i>
+              </th:block>
+            </div>
+            <span class="fw-bold" style="font-size: 0.9rem;"
+                  th:text="${m.getAverageRating() != null ? m.getAverageRating() : '0.0'}">0.0</span>
+            <span class="text-muted" style="font-size: 0.8rem;"
+                  th:text="${m.reviews != null ? '(' + m.reviews.size() + ' rəy)' : '(0 rəy)'}">(0 rəy)</span>
+          </div>
+
+          <div class="social-links">
+            <a th:href="${m.linkedinUrl}" class="s-link" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a th:href="${m.gitUrl}" class="s-link" target="_blank"><i class="fab fa-github"></i></a>
+          </div>
+
+          <button class="btn-details">PROFİLƏ BAX</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="az" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>Profil Ayarları | BrainRise</title>-->
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">-->
+<!--  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">-->
+<!--  <style>-->
+<!--    :root { &#45;&#45;mentor-primary: #6366f1; &#45;&#45;mentor-bg: #f8fafc; &#45;&#45;sidebar-dark: #0f172a; }-->
+<!--    body { background-color: var(&#45;&#45;mentor-bg); font-family: 'Plus Jakarta Sans', sans-serif; color: #334155; }-->
+<!--    .sidebar { background: var(&#45;&#45;sidebar-dark); min-height: 100vh; color: white; padding: 1.5rem; position: sticky; top: 0; }-->
+<!--    .nav-link { color: #94a3b8; padding: 0.8rem 1rem; border-radius: 12px; margin-bottom: 0.5rem; transition: 0.3s; text-decoration: none; display: block; }-->
+<!--    .nav-link:hover, .nav-link.active { background: rgba(99, 102, 241, 0.15); color: #818cf8; }-->
+<!--    /* Profil Kartı Stili */-->
+<!--    .edit-card { background: white; border-radius: 24px; border: 1px solid #e2e8f0; padding: 2.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.01); }-->
+<!--    .btn-indigo { background-color: var(&#45;&#45;mentor-primary); color: white; border-radius: 50px; font-weight: 700; padding: 12px 30px; border: none; transition: 0.3s; }-->
+<!--    .btn-indigo:hover { background-color: #4f46e5; transform: translateY(-2px); }-->
+<!--    .status-box { border-radius: 15px; padding: 15px; margin-bottom: 25px; font-weight: 600; }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="container-fluid">-->
+<!--  <div class="row">-->
+<!--    <div class="col-md-3 col-lg-2 sidebar">-->
+<!--      <div class="mb-5 px-2">-->
+<!--        <h4 class="fw-bold text-white">BRAINRISE<span class="text-primary">.</span></h4>-->
+<!--        <div class="badge bg-dark text-muted p-0 mt-1">MENTOR PANEL</div>-->
+<!--      </div>-->
+<!--      <div class="nav flex-column">-->
+<!--        <a th:href="@{/mentor/dashboard}" class="nav-link"><i class="fas fa-th-large me-2"></i> Dashboard</a>-->
+<!--        <a th:href="@{/mentor/courses}" class="nav-link"><i class="fas fa-book-bookmark me-2"></i> Kurslarım</a>-->
+<!--        <a th:href="@{/mentor/profile/settings}" class="nav-link active"><i class="fas fa-user-cog me-2"></i> Profil Ayarları</a>-->
+<!--        <hr class="border-secondary my-4">-->
+<!--        <form th:action="@{/logout}" method="post">-->
+<!--          <button type="submit" class="nav-link text-danger border-0 bg-transparent w-100 text-start">-->
+<!--            <i class="fas fa-sign-out-alt me-2"></i> Çıxış-->
+<!--          </button>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    <div class="col-md-9 col-lg-10 p-5">-->
+<!--      <div class="d-flex align-items-center justify-content-between mb-4">-->
+<!--        <div class="d-flex align-items-center">-->
+<!--          <a th:href="@{/mentor/dashboard}" class="btn btn-light rounded-circle me-3 shadow-sm">-->
+<!--            <i class="fas fa-arrow-left"></i>-->
+<!--          </a>-->
+<!--          <h2 class="fw-bold mb-0">Profil Məlumatlarını Yenilə</h2>-->
+<!--        </div>-->
+
+<!--        <div th:if="${param.success}" class="alert alert-success border-0 py-2 mb-0 rounded-pill px-4 shadow-sm">-->
+<!--          <i class="fas fa-check-circle me-2"></i> Yeniləndi!-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div th:if="${user.isVerified == false}" class="status-box bg-warning-subtle text-warning-emphasis border border-warning">-->
+<!--        <i class="fas fa-clock me-2"></i> Profiliniz hazırda <strong>yoxlanışdadır</strong>.-->
+<!--      </div>-->
+<!--      <div th:if="${user.isVerified == true}" class="status-box bg-success-subtle text-success-emphasis border border-success">-->
+<!--        <i class="fas fa-check-circle me-2"></i> Profiliniz <strong>təsdiqlənib</strong>.-->
+<!--      </div>-->
+
+<!--      <div class="edit-card">-->
+<!--        <form th:action="@{/mentor/profile/update}" th:object="${user}" method="post">-->
+<!--          <input type="hidden" th:field="*{id}">-->
+
+<!--          <div class="row g-4">-->
+<!--            <div class="col-md-12">-->
+<!--              <label class="small fw-bold mb-2">Profil Şəkli (URL)</label>-->
+<!--              <div class="input-group">-->
+<!--                <span class="input-group-text bg-light border-end-0"><i class="fas fa-image text-muted"></i></span>-->
+<!--                <input type="url" th:field="*{imgUrl}" class="form-control border-start-0" placeholder="https://example.com/photo.jpg">-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            <div class="col-md-6">-->
+<!--              <label class="small fw-bold mb-2">Tam Ad Soyad</label>-->
+<!--              <input type="text" th:field="*{fullName}" class="form-control" placeholder="Ad Soyad">-->
+<!--            </div>-->
+
+<!--            <div class="col-md-6">-->
+<!--              <label class="small fw-bold mb-2">İxtisas / Sahə</label>-->
+<!--              <input type="text" th:field="*{specialty}" class="form-control" placeholder="Java Backend Developer" required>-->
+<!--            </div>-->
+
+<!--            <div class="col-12">-->
+<!--              <label class="small fw-bold mb-2">Haqqımda</label>-->
+<!--              <textarea th:field="*{bio}" class="form-control" rows="5" placeholder="Təcrübəniz haqqında qısa məlumat..."></textarea>-->
+<!--            </div>-->
+
+<!--            <div class="col-md-6">-->
+<!--              <label class="small fw-bold mb-2"><i class="fab fa-linkedin text-primary me-2"></i>LinkedIn Linki</label>-->
+<!--              <input type="url" th:field="*{linkedinUrl}" class="form-control" placeholder="https://linkedin.com/in/...">-->
+<!--            </div>-->
+
+<!--            <div class="col-md-6">-->
+<!--              <label class="small fw-bold mb-2"><i class="fab fa-github text-dark me-2"></i>GitHub Linki</label>-->
+<!--              <input type="url" th:field="*{githubUrl}" class="form-control" placeholder="https://github.com/...">-->
+<!--            </div>-->
+
+<!--            <div class="col-12 mt-5">-->
+<!--              <button type="submit" class="btn btn-indigo">-->
+<!--                <i class="fas fa-save me-2"></i>MƏLUMATLARI YADDA SAXLA-->
+<!--              </button>-->
+<!--              <a th:href="@{/mentor/dashboard}" class="btn btn-link text-secondary text-decoration-none ms-3">İmtina et</a>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+<div xmlns:th="http://www.thymeleaf.org"
+     th:replace="~{layouts/mentor_layout :: layout(~{::section})}">
+
+  <section class="container py-5">
+
+    <!-- Header -->
+    <div class="d-flex align-items-center mb-4">
+      <a th:href="@{/mentor/dashboard}"
+         class="btn btn-light rounded-circle me-3 shadow-sm">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <h2 class="fw-bold mb-0">Profil Məlumatlarını Yenilə</h2>
+    </div>
+
+    <!-- Success -->
+    <div th:if="${param.success}" class="alert alert-success rounded-3 shadow-sm border-0 mb-4">
+      <i class="fas fa-check-circle me-2"></i>
+      Məlumatlar uğurla yeniləndi
+    </div>
+
+    <!-- Card -->
+    <div class="card border-0 shadow-sm p-4 p-md-5" style="border-radius: 24px;">
+      <form th:action="@{/mentor/profile/update}" th:object="${profile}" method="post">
+
+        <div class="row g-4">
+
+          <!-- Profil Şəkli -->
+          <div class="col-12 text-center">
+            <img th:src="*{imgUrl}" class="rounded-circle mb-3" style="width:120px;height:120px;object-fit:cover;"
+                 onerror="this.src='https://via.placeholder.com/120';">
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold">Profil Şəkli (URL)</label>
+            <input type="url" th:field="*{imgUrl}" class="form-control"
+                   placeholder="https://example.com/photo.jpg">
+          </div>
+
+          <!-- Full name -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Ad Soyad</label>
+            <input type="text" th:field="*{fullName}" class="form-control" required>
+          </div>
+
+          <!-- Specialty -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">İxtisas</label>
+            <input type="text" th:field="*{specialty}" class="form-control" required>
+          </div>
+
+          <!-- Bio -->
+          <div class="col-12">
+            <label class="form-label fw-semibold">Haqqımda</label>
+            <textarea th:field="*{bio}" class="form-control" rows="4"
+                      placeholder="Qısa məlumat yaz..."></textarea>
+          </div>
+
+          <!-- LinkedIn -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">
+              <i class="fab fa-linkedin text-primary me-1"></i> LinkedIn
+            </label>
+            <input type="url" th:field="*{linkedinUrl}" class="form-control" placeholder="https://linkedin.com/in/...">
+          </div>
+
+          <!-- GitHub -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">
+              <i class="fab fa-github me-1"></i> GitHub
+            </label>
+            <input type="url" th:field="*{githubUrl}" class="form-control" placeholder="https://github.com/...">
+          </div>
+
+          <!-- Buttons -->
+          <div class="col-12 mt-4 d-flex justify-content-start align-items-center gap-3">
+            <button type="submit" class="btn btn-primary px-5 py-2">
+              <i class="fas fa-save me-2"></i> Yadda saxla
+            </button>
+            <a th:href="@{/mentor/dashboard}" class="btn btn-outline-secondary px-4 py-2">
+              İmtina
+            </a>
+          </div>
+
+
+        </div>
+      </form>
+    </div>
+
+  </section>
+
+</div>
+
+

@@ -1,0 +1,144 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{admin/admin-layout}">-->
+<!--<head>-->
+<!--    <title>Mentor İdarəetməsi | BrainRise</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div layout:fragment="page-title">Mentorların Siyahısı</div>-->
+
+<!--<div layout:fragment="content">-->
+<!--    <div class="glass-card">-->
+<!--        <div class="d-flex justify-content-between align-items-center mb-4">-->
+<!--            <h5 class="fw-bold mb-0">Bütün Mentorlar</h5>-->
+<!--            <a href="/register?role=ROLE_MENTOR" class="btn btn-primary btn-sm rounded-pill px-3">+ Yeni Mentor</a>-->
+<!--        </div>-->
+
+<!--        <div class="table-responsive">-->
+<!--            <table class="table table-hover align-middle">-->
+<!--                <thead>-->
+<!--                <tr class="small text-muted">-->
+<!--                    <th>MENTOR</th>-->
+<!--                    <th>İXTİSAS</th>-->
+<!--                    <th>KURS SAYI</th>-->
+<!--                    <th>STATUS</th>-->
+<!--                    <th class="text-end">ƏMƏLİYYAT</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr th:each="m : ${mentors}">-->
+<!--                    <td>-->
+<!--                        <div class="d-flex align-items-center">-->
+<!--                            <img th:src="${m.imgUrl != null && m.imgUrl != '' ? m.imgUrl : 'https://ui-avatars.com/api/?name=' + m.name}"-->
+<!--                                 class="rounded-circle me-2" width="35" height="35" style="object-fit: cover;">-->
+<!--                            <span class="fw-bold" th:text="${m.name}">Ad Soyad</span>-->
+<!--                        </div>-->
+<!--                    </td>-->
+<!--                    <td th:text="${m.specialty != null ? m.specialty : 'Qeyd edilməyib'}">İxtisas</td>-->
+<!--                    <td>-->
+<!--                        <span class="badge bg-light text-dark fw-normal px-2 py-1"-->
+<!--                              th:text="${m.courseCount + ' Kurs'}">0 Kurs</span>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <span class="status-pill status-online">Aktiv</span>-->
+<!--                    </td>-->
+<!--                    <td class="text-end">-->
+<!--                        <div class="d-flex justify-content-end gap-2">-->
+<!--                            <button class="btn btn-light btn-sm"><i class="fas fa-edit text-primary"></i></button>-->
+
+<!--                            <form th:action="@{/admin/mentor/delete/{id}(id=${m.id})}" method="post"-->
+<!--                                  onsubmit="return confirm('Bu mentoru və ona bağlı məlumatları silmək istədiyinizə əminsiniz?')">-->
+<!--                                <button type="submit" class="btn btn-light btn-sm text-danger">-->
+<!--                                    <i class="fas fa-trash-alt"></i>-->
+<!--                                </button>-->
+<!--                            </form>-->
+<!--                        </div>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                <tr th:if="${#lists.isEmpty(mentors)}">-->
+<!--                    <td colspan="5" class="text-center py-4 text-muted small">-->
+<!--                        Bazada hər hansı bir mentor tapılmadı.-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+    <title>Mentor İdarəetməsi | BrainRise</title>
+</head>
+<body>
+
+<div layout:fragment="page-title">Mentorların Siyahısı</div>
+
+<div layout:fragment="content">
+    <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold mb-0">Bütün Mentorlar</h5>
+            <a href="/register?role=ROLE_MENTOR" class="btn btn-primary btn-sm rounded-pill px-3">+ Yeni Mentor</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr class="small text-muted">
+                    <th>MENTOR</th>
+                    <th>İXTİSAS</th>
+                    <th>KURS SAYI</th>
+                    <th>STATUS</th>
+                    <th class="text-end">ƏMƏLİYYAT</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="m : ${mentors}">
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img th:src="${m.imgUrl != null && m.imgUrl != '' ? m.imgUrl : 'https://ui-avatars.com/api/?name=' + m.name}"
+                                 class="rounded-circle me-2" width="35" height="35" style="object-fit: cover;">
+                            <span class="fw-bold" th:text="${m.name}">Ad Soyad</span>
+                        </div>
+                    </td>
+                    <td th:text="${m.specialty != null ? m.specialty : 'Qeyd edilməyib'}">İxtisas</td>
+                    <td>
+                        <span class="badge bg-light text-dark fw-normal px-2 py-1"
+                              th:text="${(m.courseCount != null ? m.courseCount : 0) + ' Kurs'}">0 Kurs</span>
+                    </td>
+                    <td>
+                        <span class="status-pill status-online">Aktiv</span>
+                    </td>
+                    <td class="text-end">
+                        <div class="d-flex justify-content-end">
+                            <form th:action="@{/admin/mentor/delete/{id}(id=${m.id})}" method="post"
+                                  th:onsubmit="if([[${m.courseCount}]] > 0) { alert('Bu mentorun aktiv kursları var! Əvvəlcə kursları silməlisiniz.'); return false; } return confirm('Bu mentoru və ona bağlı məlumatları silmək istədiyinizə əminsiniz?');">
+                                <button type="submit" class="btn btn-light btn-sm text-danger shadow-sm rounded-circle" style="width: 32px; height: 32px;">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(mentors)}">
+                    <td colspan="5" class="text-center py-5 text-muted small">
+                        <i class="fas fa-user-slash d-block mb-2 style='font-size: 2rem;'"></i>
+                        Bazada hər hansı bir mentor tapılmadı.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

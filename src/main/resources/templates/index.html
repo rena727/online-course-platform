@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="az"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+  <title>Ana Səhifə</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+  <section class="hero py-5 bg-primary text-white">
+    <div class="container text-center py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <h1 class="display-3 fw-bold mb-4" th:text="${banner.title}">
+            Gələcəyin Kodunu Bizimlə Yaz!
+          </h1>
+          <p class="lead mb-0 opacity-75" th:text="${banner.subTitle}">
+            Professional mentorlar və real imtahan sistemi ilə biliyini sına.
+            Backend dünyasında öz imzanı qoymaq üçün doğru ünvandasan.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXAMS -->
+  <section id="exams" class="container py-5">
+    <div class="section-title text-center mb-5">
+      <h2 class="fw-bold text-primary">Aktiv İmtahanlar</h2>
+      <p class="text-muted">Sertifikat əldə etmək üçün biliklərinizi yoxlayın.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6" th:each="examItem : ${exams}">
+        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden exam-card-pro"
+             th:onclick="|window.location.href='/exams'|"
+             style="cursor: pointer;">
+
+          <div class="position-relative">
+            <img th:src="${examItem.imageUrl}"
+                 th:alt="${examItem.name}"
+                 class="card-img-top"
+                 style="height: 200px; object-fit: cover;">
+
+            <span class="badge position-absolute top-0 end-0 m-3 px-3 py-2"
+                  th:classappend="${examItem.price == '0' ? 'bg-success' : 'bg-danger'}"
+                  th:text="${examItem.price == '0' ? 'PULSUZ' : 'SERTİFİKATLI'}">
+                        </span>
+          </div>
+
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-1" th:text="${examItem.name}">İmtahan</h5>
+
+            <p class="text-muted small mb-3">
+              <i class="far fa-clock me-1"></i>
+              <span th:text="${examItem.examDuration}">30</span> Dəqiqə |
+              <span th:text="${examItem.questionCount}">20</span> Sual
+            </p>
+
+            <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-primary fw-bold mb-0"
+                                  th:text="${examItem.price + ' AZN'}">0 AZN</span>
+
+              <div class="btn rounded-pill px-4 fw-bold"
+                   th:classappend="${examItem.price == '0' ? 'btn-outline-primary' : 'btn-primary'}">
+                <span th:text="${examItem.price == '0' ? 'İndi Başla' : 'Satın Al'}"></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COURSES -->
+<!--  <section id="courses" class="bg-light py-5">-->
+<!--    <div class="container">-->
+<!--      <div class="section-title text-center mb-5">-->
+<!--        <h2 class="fw-bold text-primary">Kurslarımız</h2>-->
+<!--        <p class="text-muted">Gələcəyinizi bizimlə qurun və peşəkar biliklərə sahib olun.</p>-->
+<!--      </div>-->
+
+<!--      <div class="row g-4">-->
+<!--        <div class="col-lg-3 col-md-6"-->
+<!--             th:each="c, iter : ${courses}"-->
+<!--             th:if="${iter.index < 4}">-->
+
+<!--          <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden course-card-pro"-->
+<!--               th:onclick="|window.location.href='/courses'|"-->
+<!--               style="cursor: pointer; transition: transform 0.3s ease;">-->
+
+<!--            <div class="position-relative">-->
+<!--              <img th:src="@{${c.iconClass}}"-->
+<!--                   th:alt="${c.name}"-->
+<!--                   class="card-img-top"-->
+<!--                   style="height: 180px; object-fit: cover;">-->
+
+<!--              <span class="badge bg-primary position-absolute top-0 end-0 m-3 px-3 py-2">-->
+<!--              KURS-->
+<!--            </span>-->
+<!--            </div>-->
+
+<!--            <div class="card-body p-4 d-flex flex-column">-->
+<!--              <h5 class="fw-bold mb-2 text-dark" th:text="${c.name}">Kurs Adı</h5>-->
+
+<!--              <p class="small text-muted mb-4" th:text="${c.description}">-->
+<!--                Kurs haqqında qısa məlumat bura gələcək.-->
+<!--              </p>-->
+
+<!--              <div class="mt-auto d-flex justify-content-between align-items-center">-->
+<!--                <span class="small fw-bold text-primary">Ətraflı Bax</span>-->
+<!--                <div class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold">-->
+<!--                  Kursa keç-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </section>-->
+
+  <section id="courses" class="bg-light py-5">
+    <div class="container">
+      <div class="section-title text-center mb-5">
+        <h2 class="fw-bold text-primary">Kurslarımız</h2>
+        <p class="text-muted">Gələcəyinizi bizimlə qurun və peşəkar biliklərə sahib olun.</p>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <div class="col-lg-4 col-md-6"
+             th:each="c, iter : ${courses}"
+             th:if="${iter.index < 3}"> <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden course-card-pro"
+                                             th:onclick="|window.location.href='/courses'|"
+                                             style="cursor: pointer; transition: transform 0.3s ease;">
+
+          <div class="position-relative">
+            <img th:src="@{${c.iconClass}}"
+                 th:alt="${c.name}"
+                 class="card-img-top"
+                 style="height: 200px; object-fit: cover;">
+
+            <span class="badge bg-primary position-absolute top-0 end-0 m-3 px-3 py-2">
+              KURS
+            </span>
+          </div>
+
+          <div class="card-body p-4 d-flex flex-column">
+            <h5 class="fw-bold mb-2 text-dark" th:text="${c.name}">Kurs Adı</h5>
+
+            <p class="text-muted small mb-4" th:text="${c.description}">
+              Kurs haqqında qısa məlumat bura gələcək.
+            </p>
+
+            <div class="mt-auto d-flex justify-content-between align-items-center">
+              <span class="h5 text-primary fw-bold mb-0">Öyrənməyə başla</span>
+
+              <div class="btn btn-outline-primary rounded-pill px-4 fw-bold">
+                Kursa keç
+              </div>
+            </div>
+          </div>
+
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- MENTORS -->
+  <section id="mentors" class="container py-5">
+    <div class="section-title text-center mb-5">
+      <h2 class="fw-bold">Təcrübəli Mentorlarımız</h2>
+    </div>
+
+    <div class="row text-center g-4 row-cols-1 row-cols-md-3">
+      <div class="col" th:each="mentor : ${mentors}">
+        <div class="mentor-card p-4 border rounded-4 shadow-sm bg-white h-100 position-relative">
+
+          <img th:src="${mentor.imgUrl}"
+               class="rounded-circle mb-3 border border-4 border-primary-subtle"
+               width="100" height="100"
+               style="object-fit: cover;">
+
+          <h5 class="fw-bold" th:text="${mentor.name}">Mentor</h5>
+          <p class="text-primary small" th:text="${mentor.specialty}"></p>
+
+          <a th:href="@{/mentors}" class="stretched-link"></a>
+
+          <div class="d-flex justify-content-center gap-3"
+               style="position: relative; z-index: 2;">
+            <a th:href="${mentor.linkedinUrl}" target="_blank" class="text-secondary">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a th:href="${mentor.gitUrl}" target="_blank" class="text-secondary">
+              <i class="fab fa-github"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section id="blog-preview" class="bg-light py-5">
+    <div class="container">
+      <div class="section-title text-center mb-5">
+        <h2 class="fw-bold">Son Bloq Yazıları</h2>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-4" th:each="blog : ${blogs}">
+          <a th:href="@{/blog/{id}(id=${blog.id})}"
+             class="text-decoration-none text-dark">
+
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+              <img th:src="${blog.imageUrl}"
+                   class="card-img-top"
+                   style="height: 200px; object-fit: cover;">
+
+              <div class="card-body p-4">
+                                <span class="badge mb-2"
+                                      th:text="${blog.categoryName ?: 'Bloq'}"></span>
+
+                <h5 class="fw-bold" th:text="${blog.title}"></h5>
+                <p class="small text-muted" th:text="${blog.subTitle}"></p>
+
+                <span class="text-primary small fw-bold">
+                                    Davamını oxu →
+                                </span>
+              </div>
+            </div>
+
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

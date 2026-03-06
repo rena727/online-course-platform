@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Sertifikat</title>
+    <style>
+        /* Font-u standart sans-serif etdik ki, generator tapıb işlədə bilsin */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .cert-container {
+            border: 10px solid #0d6efd;
+            padding: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="cert-container">
+    <h1 style="color: #0d6efd;">EDUMASTER SERTİFİKATI</h1>
+    <p>Bu sertifikat təsdiq edir ki,</p>
+
+    <h2 th:text="${fullName}" style="font-size: 40px; margin: 20px 0;">İstifadəçi Adı</h2>
+
+    <p>
+        <b th:text="${examName}">İmtahan</b> imtahanını
+        <b th:text="${score + '%'}">0%</b> nəticə ilə uğurla başa vurmuşdur.
+    </p>
+
+    <div style="margin-top: 50px;">
+        <p>Tarix: <span th:text="${date}">01.01.2026</span></p>
+        <p><i>EduMaster Rəhbərliyi</i></p>
+    </div>
+</div>
+</body>
+</html>

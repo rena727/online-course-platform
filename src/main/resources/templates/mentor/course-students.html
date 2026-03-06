@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/mentor_layout :: layout(~{::content})}">
+<title>Tələbələr | BrainRise</title>
+</head>
+<body>
+
+<div th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold mb-1">Tələbə Siyahısı</h2>
+            <p class="text-muted" th:text="${courseName != null ? courseName + ' kursuna qoşulanlar' : 'Bütün kurslar üzrə tələbələriniz'}"></p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4 py-3">Tələbə</th>
+                        <th class="py-3">Email</th>
+                        <th class="py-3">Qoşulduğu Kurslar</th>
+                        <th class="py-3 text-end pe-4">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="student : ${students}">
+                        <td class="ps-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <span class="fw-bold text-dark" th:text="${student.fullName}">Rena Abdullayeva</span>
+                            </div>
+                        </td>
+                        <td th:text="${student.email}">rena@gmail.com</td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-2">
+        <span class="badge bg-primary-subtle text-primary px-3 py-2"
+              th:each="course : ${#strings.arraySplit(student.enrolledCourses, '||')}"
+              th:text="${course}">
+            Java Spring Boot
+        </span>
+                            </div>
+                        </td>
+                        <td class="text-end pe-4">
+                            <span class="badge bg-success-subtle text-success border-success-subtle px-3 py-2">
+                                <i class="fas fa-check-circle me-1"></i>Aktiv
+                            </span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(students)}">
+                        <td colspan="4" class="text-center py-5">
+                            <div class="py-4">
+                                <i class="fas fa-user-slash fa-3x text-muted mb-3"></i>
+                                <p class="text-muted fs-5">Hələ ki, heç bir tələbə qoşulmayıb.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

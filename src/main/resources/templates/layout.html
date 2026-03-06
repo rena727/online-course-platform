@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="az"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Dynamic title -->
+    <title layout:title-pattern="$CONTENT_TITLE - EduMaster">EduMaster</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-primary" th:href="@{/}">
+            <i class="fas fa-graduation-cap me-2"></i>EduMaster
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">Ana səhifə</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/courses}">Kurslar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/exams}">İmtahanlar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/mentors}">Mentorlar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/blog}">Bloq</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/contact}">Əlaqə</a>
+                </li>
+                <!-- GİRİŞ (anonim istifadəçi) -->
+                <li class="nav-item ms-lg-3" sec:authorize="isAnonymous()">
+                    <a th:href="@{/login}"
+                       class="btn btn-primary px-4 rounded-pill shadow-sm">
+                        Giriş
+                    </a>
+                </li>
+
+                <!-- USER PROFILE -->
+                <li class="nav-item ms-lg-3"
+                    sec:authorize="hasRole('ROLE_USER')">
+                    <a th:href="@{/profile}"
+                       class="btn btn-outline-primary px-4 rounded-pill shadow-sm fw-600">
+                        <i class="fas fa-user-circle me-1"></i> Profilim
+                    </a>
+                </li>
+
+                <!-- MENTOR DASHBOARD -->
+                <li class="nav-item ms-lg-3"
+                    sec:authorize="hasRole('ROLE_MENTOR')">
+                    <a th:href="@{/mentor/dashboard}"
+                       class="btn btn-outline-primary px-4 rounded-pill shadow-sm fw-600">
+                        <i class="fas fa-user-tie me-1"></i> Mentor Panel
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="flex-fill">
+    <div layout:fragment="content"></div>
+</main>
+
+
+
+<!--<footer class="bg-dark text-white text-center py-4 mt-auto">-->
+<!--    <div class="container">-->
+<!--        <p class="mb-2">&copy; 2026 EduMaster Təhsil Portalı</p>-->
+
+<!--        <div class="mb-3">-->
+<!--            <a th:href="@{/contact}" class="text-white-50 text-decoration-none small">-->
+<!--                <i class="fas fa-envelope me-1"></i> Bizə yazın / Şikayət bildir-->
+<!--            </a>-->
+<!--        </div>-->
+
+<!--        <div class="d-flex justify-content-center gap-3">-->
+<!--            <a href="#" class="text-white-50 fs-5"><i class="fab fa-facebook"></i></a>-->
+<!--            <a href="#" class="text-white-50 fs-5"><i class="fab fa-instagram"></i></a>-->
+<!--            <a href="#" class="text-white-50 fs-5"><i class="fab fa-linkedin"></i></a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</footer>-->
+
+<footer class="bg-dark text-white text-center py-4 mt-auto">
+    <div class="container">
+        <p class="mb-2">&copy; 2026 <span th:text="${foot.title}">EduMaster</span> Təhsil Portalı</p>
+
+        <div class="mb-3">
+            <a th:href="@{/contact}" class="text-white-50 text-decoration-none small">
+                <i class="fas fa-envelope me-1"></i> Bizə yazın / Şikayət bildir
+            </a>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a th:href="${foot.facebookUrl}" target="_blank" class="text-white-50 fs-5">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a th:href="${foot.instagramUrl}" target="_blank" class="text-white-50 fs-5">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a th:href="${foot.linkedinUrl}" target="_blank" class="text-white-50 fs-5">
+                <i class="fab fa-linkedin"></i>
+            </a>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

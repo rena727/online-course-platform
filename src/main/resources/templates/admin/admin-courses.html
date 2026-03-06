@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}"> <head>
+  <title>Bütün Kurslar</title>
+</head>
+<body>
+
+<div layout:fragment="page-title">Kurs Bazası</div>
+
+<div layout:fragment="content">
+  <div class="glass-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="fw-bold mb-0">Sistemdəki Bütün Kurslar</h5>
+      <div class="search-box">
+        <input type="text" class="form-control form-control-sm rounded-pill px-3" placeholder="Kurs axtar...">
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light text-muted small">
+        <tr>
+          <th>KURS</th>
+          <th>MENTOR</th>
+          <th>QİYMƏT</th>
+          <th>STATUS</th>
+          <th class="text-end">İDARƏETMƏ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="course : ${allCourses}">
+          <td><span class="fw-bold small" th:text="${course.name}">Kurs Adı</span></td>
+          <td class="small" th:text="${course.mentorName}">Mentor</td>
+          <td class="text-primary fw-bold small" th:text="${course.price} + ' ₼'">0 ₼</td>
+          <td>
+            <span th:if="${course.approved}" class="status-approved">Təsdiqli</span>
+            <span th:if="${!course.approved}" class="status-rejected">Təsdiqsiz</span>
+          </td>
+          <td class="text-end">
+            <form th:action="@{/admin/course/delete/{id}(id=${course.id})}" method="post"
+                  onsubmit="return confirm('Kursu silmək istədiyinizə əminsiniz?')">
+              <button type="submit" class="btn btn-sm btn-light rounded-circle shadow-sm">
+                <i class="fas fa-trash text-danger"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <nav class="mt-4">
+      <ul class="pagination pagination-sm justify-content-center">
+        <li class="page-item disabled"><a class="page-link" href="#">Əvvəl</a></li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">Sonra</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+</body>
+</html>

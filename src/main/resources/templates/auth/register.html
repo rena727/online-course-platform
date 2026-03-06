@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="az" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qeydiyyat | EduMaster</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --primary: #4e73df; --bg: #f4f7fe; }
+        body { background: var(--bg); font-family: 'Poppins', sans-serif; height: 100vh; display: flex; align-items: center; }
+        .auth-card { border: none; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; max-width: 900px; width: 100%; margin: auto; }
+        .auth-info { background: linear-gradient(135deg, var(--primary), #224abe); color: white; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+        .form-control { border-radius: 10px; padding: 12px; border: 1px solid #e3e6f0; }
+        .btn-auth { border-radius: 10px; padding: 12px; font-weight: 600; transition: 0.3s; }
+        .role-selection .btn-check:checked + .btn-outline-primary { background-color: var(--primary); color: white; }
+        .toggle-link { color: var(--primary); text-decoration: none; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card auth-card shadow">
+        <div class="row g-0">
+            <div class="col-lg-5 auth-info text-center d-none d-lg-flex">
+                <i class="fas fa-graduation-cap fa-4x mb-4"></i>
+                <h2 class="fw-bold">Hesab Yaradın</h2>
+                <p class="opacity-75">EduMaster-ə qoşularaq öyrənməyə və ya biliklərinizi paylaşmağa başlayın.</p>
+            </div>
+
+            <div class="col-lg-7 bg-white p-5">
+                <div id="register-form">
+                    <h3 class="fw-bold mb-4">Hesab Yaradın</h3>
+                    <form th:action="@{/register}" th:object="${user}" method="post">
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Ad</label>
+                                <input type="text" th:field="*{fullName}" class="form-control" placeholder="Murad" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">İstifadəçi Adı</label>
+                                <input type="text" th:field="*{username}" class="form-control" placeholder="murad_h" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold d-block">Mən kiməm?</label>
+                            <div class="btn-group w-100 role-selection" role="group">
+                                <input type="radio" class="btn-check" name="selectedRole" id="student" value="ROLE_USER" checked>
+                                <label class="btn btn-outline-primary" for="student"><i class="fas fa-user-graduate me-2"></i>Tələbə</label>
+
+                                <input type="radio" class="btn-check" name="selectedRole" id="teacher" value="ROLE_MENTOR">
+                                <label class="btn btn-outline-primary" for="teacher"><i class="fas fa-chalkboard-teacher me-2"></i>Müəllim</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Email</label>
+                            <input type="email" th:field="*{email}" class="form-control" placeholder="mail@example.com" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold">Şifrə</label>
+                            <input type="password" th:field="*{password}" class="form-control" placeholder="Min. 8 simvol" required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-auth w-100 mb-3 text-white">Qeydiyyatı Tamamla</button>
+                    </form>
+                    <p class="text-center small">Artıq hesabınız var? <a th:href="@{/login}" class="toggle-link">Daxil olun</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

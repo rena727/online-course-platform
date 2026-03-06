@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="az" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
+<head><title>Ödəniş Səhifəsi</title></head>
+<body>
+<div layout:fragment="content" class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-5">
+                    <h3 class="text-center fw-bold mb-4">Kartla Ödəniş</h3>
+                    <div class="alert alert-info py-2 small">Ödəniləcək məbləğ: <strong th:text="${course.price} + ' AZN'"></strong></div>
+
+                    <form th:action="@{/courses/{id}/pay(id=${course.id})}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Kart nömrəsi</label>
+                            <input type="text" class="form-control" placeholder="0000 0000 0000 0000" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold">Müddət</label>
+                                <input type="text" class="form-control" placeholder="MM/YY" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold">CVV</label>
+                                <input type="password" class="form-control" placeholder="***" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 btn-lg rounded-pill mt-3 shadow">
+                            Ödənişi Tamamla
+                        </button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" width="60" class="me-2 opacity-50">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" width="40" class="me-2 opacity-50">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

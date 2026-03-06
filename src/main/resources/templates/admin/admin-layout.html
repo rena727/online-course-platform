@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="az" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$LAYOUT_TITLE | $CONTENT_TITLE">EduMaster Master Admin</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --primary-color: #3f83f8; --sidebar-bg: #1e293b; --content-bg: #f8fafc; --glass-bg: rgba(255, 255, 255, 0.9); --border-color: rgba(226, 232, 240, 0.8); }
+        body { font-family: 'Inter', sans-serif; background-color: var(--content-bg); color: #1e293b; margin: 0; }
+        .admin-sidebar { width: 260px; height: 100vh; position: fixed; background: var(--sidebar-bg); padding: 1.5rem; z-index: 1000; overflow-y: auto; }
+        .sidebar-brand { font-size: 1.25rem; font-weight: 700; color: white; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-link { color: #94a3b8; padding: 0.8rem 1rem; border-radius: 12px; margin-bottom: 0.5rem; transition: all 0.3s; display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-link:hover, .nav-link.active { background: rgba(63, 131, 248, 0.15); color: var(--primary-color); }
+        .admin-top-nav { margin-left: 260px; background: var(--glass-bg); backdrop-filter: blur(10px); padding: 1rem 2rem; border-bottom: 1px solid var(--border-color); z-index: 999; }
+        .admin-content { margin-left: 260px; padding: 2rem; }
+        .glass-card { background: white; padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: transform 0.2s; }
+        .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .status-online, .status-approved { background: #dcfce7; color: #166534; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
+    </style>
+    <th:block layout:fragment="custom-style"></th:block>
+</head>
+<body>
+
+<aside class="admin-sidebar shadow">
+    <div class="sidebar-brand">
+        <a th:href="@{/}" class="text-decoration-none text-white d-flex align-items-center">
+            <i class="fas fa-shield-halved me-2 text-primary"></i>
+            <span>EDUMASTER <span class="text-primary">OS</span></span>
+        </a>    </div>
+    <nav class="nav flex-column mt-4">
+        <a class="nav-link" th:href="@{/admin/dashboard}" th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+            <i class="fas fa-home"></i> Konsol
+        </a>
+        <a class="nav-link" th:href="@{/admin/moderation}" th:classappend="${activePage == 'moderation' ? 'active' : ''}">
+            <i class="fas fa-video"></i> Video Təsdiqi
+            <span class="badge bg-danger ms-auto rounded-pill">5</span>
+        </a>
+        <a class="nav-link" th:href="@{/admin/courses}"
+           th:classappend="${activePage == 'courses' ? 'active' : ''}">
+            <i class="fas fa-book"></i> Kurslar
+        </a>
+        <a class="nav-link" th:href="@{/admin/mentors}" th:classappend="${activePage == 'mentors' ? 'active' : ''}">
+            <i class="fas fa-chalkboard-teacher"></i> Mentorlar
+        </a>
+        <a class="nav-link" th:href="@{/admin/exams}" th:classappend="${activePage == 'exams' ? 'active' : ''}">
+            <i class="fas fa-file-signature"></i> İmtahanlar
+        </a>
+
+        <a class="nav-link" th:href="@{/admin/blog}" th:classappend="${activePage == 'blogs' ? 'active' : ''}">
+            <i class="fas fa-blog"></i> Bloq Yazıları
+        </a>
+
+        <hr class="mx-4 my-3 border-secondary">
+        <a class="nav-link" th:href="@{/admin/users}" th:classappend="${activePage == 'users' ? 'active' : ''}">
+            <i class="fas fa-user-group"></i> İstifadəçilər
+        </a>
+        <a class="nav-link" th:href="@{/admin/reports}" th:classappend="${activePage == 'reports' ? 'active' : ''}">
+            <i class="fas fa-flag"></i> Şikayətlər
+            <span class="badge bg-danger ms-auto rounded-pill">3</span>
+        </a>
+        <a class="nav-link" th:href="@{/admin/layout}"
+           th:classappend="${activePage == 'layout' ? 'active' : ''}">
+            <i class="fas fa-layer-group"></i> Layout & Banner
+        </a>
+
+
+
+
+        <a class="nav-link text-danger mt-5" href="#" onclick="document.getElementById('logoutForm').submit();">
+            <i class="fas fa-right-from-bracket"></i> Çıxış
+        </a>
+    </nav>
+</aside>
+
+<header class="admin-top-nav d-flex justify-content-between align-items-center sticky-top">
+    <h5 class="mb-0 fw-semibold text-dark" layout:fragment="page-title">Sistem Nəzarəti</h5>
+    <div class="d-flex align-items-center gap-4">
+        <div class="position-relative"><i class="far fa-bell fs-5 text-muted"></i><span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span></div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="small fw-medium text-dark">Admin: Rena.A</span>
+            <img src="https://ui-avatars.com/api/?name=Admin&background=3f83f8&color=fff" class="rounded-circle" width="35">
+        </div>
+    </div>
+</header>
+
+<main class="admin-content">
+    <div layout:fragment="content"></div>
+</main>
+
+<form th:action="@{/logout}" method="post" id="logoutForm" style="display:none;"></form>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<th:block layout:fragment="custom-scripts"></th:block>
+</body>
+</html>

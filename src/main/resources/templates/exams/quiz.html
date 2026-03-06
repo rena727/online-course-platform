@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="az" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>İmtahan | EduMaster</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #f0f2f5; font-family: 'Poppins', sans-serif; }
+        .quiz-box { max-width: 800px; margin: 40px auto; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
+        .option-item { background: #f8f9fa; border: 2px solid #eee; padding: 15px 25px; border-radius: 15px; cursor: pointer; margin-bottom: 12px; transition: 0.2s; }
+        .option-item:hover { border-color: #0d6efd; background: #f0f7ff; }
+        .option-item.selected { border-color: #0d6efd; background: #0d6efd; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container py-4 text-center">
+    <a th:href="@{/exams}" class="btn btn-outline-secondary rounded-pill px-4 mb-4 shadow-sm">
+        <i class="fas fa-chevron-left me-2"></i>İmtahanlara Qayıt
+    </a>
+
+    <div id="quiz-container" class="quiz-box text-start">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold text-primary mb-0" th:text="${exam.name}">İmtahan</h3>
+            <span id="timer" class="badge bg-danger p-2 h5 mb-0">30:00</span>
+        </div>
+
+        <div id="question-area">
+            <div class="mb-2 text-muted" id="q-counter">Sual 1</div>
+            <h4 id="q-text" class="fw-bold mb-4"></h4>
+            <div id="options-box"></div>
+            <button onclick="nextQuestion()" class="btn btn-primary w-100 mt-4 py-3 rounded-pill fw-bold">Növbəti</button>
+        </div>
+
+        <div id="result-area" class="d-none text-center py-4">
+            <div id="result-icon"></div>
+            <h2 class="fw-bold">İmtahan Bitdi!</h2>
+            <div class="display-3 fw-bold text-primary mb-3" id="score-text">0%</div>
+            <p id="status-msg" class="h5 mb-4"></p>
+
+            <div class="d-grid gap-2 d-md-block">
+                <a th:href="@{/profile}" class="btn btn-dark btn-lg rounded-pill px-5">Profilimə Bax</a>
+                <a th:href="@{/exams}" class="btn btn-primary btn-lg rounded-pill px-5">Digər İmtahanlar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const questions = /*[[${exam.questions}]]*/ [];
+    const examId = /*[[${exam.id}]]*/ 0;
+    let qIdx = 0, score = 0, selected = null;
+
+    // TAYMER MƏNTİQİ
+    let timeLeft = 30 * 60; // 30 dəqiqə
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    function updateTimer() {
+        let mins = Math.floor(timeLeft / 60);
+        let secs = timeLeft % 60;
+        document.getElementById('timer').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            finishQuiz();
+        }
+        timeLeft--;
+    }
+
+    function showQ() {
+        if(qIdx >= questions.length) {
+            clearInterval(timerInterval);
+            finishQuiz();
+            return;
+        }
+        document.getElementById('q-counter').innerText = `Sual ${qIdx + 1} / ${questions.length}`;
+        let q = questions[qIdx];
+        document.getElementById('q-text').innerText = q.content;
+        let box = document.getElementById('options-box');
+        box.innerHTML = '';
+
+        const opts = [q.optionA, q.optionB, q.optionC, q.optionD];
+        opts.forEach((o, i) => {
+            if(o) box.innerHTML += `<div class="option-item shadow-sm" onclick="select(${i}, this)">${o}</div>`;
+        });
+    }
+
+    function select(i, el) {
+        document.querySelectorAll('.option-item').forEach(x => x.classList.remove('selected'));
+        el.classList.add('selected');
+        selected = i;
+    }
+
+    function nextQuestion() {
+        if(selected === null) return alert("Zəhmət olmasa bir variant seçin!");
+
+        // Düzgün cavab yoxlanışı
+        if(selected === questions[qIdx].correctIndex) {
+            score++;
+        }
+
+        qIdx++;
+        selected = null;
+        showQ();
+    }
+
+    function finishQuiz() {
+        clearInterval(timerInterval);
+        document.getElementById('question-area').classList.add('d-none');
+        document.getElementById('result-area').classList.remove('d-none');
+
+        let percent = Math.round((score / questions.length) * 100);
+        document.getElementById('score-text').innerText = percent + "%";
+
+        // BAZAYA YAZMA (BACKEND-Ə GÖNDƏRMƏ)
+        fetch('/exams/save-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                examId: examId,
+                score: percent
+            })
+        })
+        .then(res => {
+            if(res.ok) console.log("Nəticə qeyd olundu.");
+        })
+        .catch(err => console.error("Xəta:", err));
+
+        const isSuccess = percent >= 70;
+        document.getElementById('status-msg').innerText = isSuccess ?
+            "Təbrik edirik! Keçid balını topladınız. ✨" : "Təəssüf, keçid balını toplamadınız. ❌";
+
+        document.getElementById('result-icon').innerHTML = isSuccess ?
+            '<i class="fas fa-check-circle fa-5x text-success mb-3"></i>' :
+            '<i class="fas fa-times-circle fa-5x text-danger mb-3"></i>';
+    }
+
+    window.onload = showQ;
+</script>
+</body>
+</html>
+
+

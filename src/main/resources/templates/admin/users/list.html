@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="az" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+  <title>İstifadəçilər | EduMaster OS</title>
+</head>
+<body>
+
+<div layout:fragment="page-title">İstifadəçi İdarəetməsi</div>
+
+<div layout:fragment="content">
+  <div class="glass-card mt-2">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h5 class="fw-bold mb-0">İstifadəçi Bazası</h5>
+        <p class="text-muted small mb-0">Sistemdəki bütün tələbə, mentor və adminlər</p>
+      </div>
+      <span class="badge bg-primary rounded-pill px-3 py-2" th:text="${users.size()} + ' İstifadəçi'"></span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light small text-muted">
+        <tr>
+          <th>İSTİFADƏÇİ</th>
+          <th>ROLLAR</th>
+          <th class="text-end">ƏMƏLİYYATLAR</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${users}">
+          <td>
+            <div class="d-flex align-items-center">
+              <img th:src="${u.imgUrl != null && !u.imgUrl.isEmpty() ? u.imgUrl : 'https://ui-avatars.com/api/?name=' + u.fullName + '&background=random'}"
+                   class="rounded-circle me-3" width="40" height="40" style="object-fit: cover;">
+              <div>
+                <div class="fw-bold text-dark" th:text="${u.fullName}"></div>
+                <small class="text-muted" th:text="${u.email}"></small>
+              </div>
+            </div>
+          </td>
+          <td>
+                        <span th:each="role : ${u.roles}"
+                              th:class="${role == 'ROLE_ADMIN' ? 'badge bg-danger' : (role == 'ROLE_MENTOR' ? 'badge bg-primary' : 'badge bg-secondary')}"
+                              th:text="${role.replace('ROLE_', '')}" class="me-1 shadow-sm">
+                        </span>
+          </td>
+          <td class="text-end">
+            <form th:if="${!u.roles.contains('ROLE_ADMIN')}" th:action="@{/admin/users/make-admin/{id}(id=${u.id})}" method="post" class="d-inline">
+              <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm" title="Admin Səlahiyyəti Ver">
+                <i class="fas fa-user-shield"></i>
+              </button>
+            </form>
+
+            <form th:if="${u.roles.contains('ROLE_ADMIN')}" th:action="@{/admin/users/remove-admin/{id}(id=${u.id})}" method="post" class="d-inline">
+              <button type="submit" class="btn btn-sm btn-danger shadow-sm" title="Admin Səlahiyyətini Al">
+                <i class="fas fa-user-minus"></i>
+              </button>
+            </form>
+
+            <form th:action="@{/admin/users/delete/{id}(id=${u.id})}" method="post" class="d-inline ms-1"
+                  onsubmit="return confirm('DİQQƏT: Bu istifadəçini bazadan silmək istədiyinizə əminsiniz?')">
+              <button type="submit" class="btn btn-sm btn-light text-danger shadow-sm">
+                <i class="fas fa-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

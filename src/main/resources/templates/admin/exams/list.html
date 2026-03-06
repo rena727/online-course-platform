@@ -1,0 +1,136 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="az" xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{admin/admin-layout}">-->
+<!--<head>-->
+<!--  <title>İmtahanlar | EduMaster OS</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div layout:fragment="page-title">İmtahanlar</div>-->
+
+<!--<div layout:fragment="content">-->
+<!--  <div class="glass-card">-->
+<!--    <div class="d-flex justify-content-between align-items-center mb-3">-->
+<!--      <h5>Bütün İmtahanlar</h5>-->
+<!--      <a th:href="@{/admin/exams/create}" class="btn btn-primary">-->
+<!--        <i class="fas fa-plus me-2"></i> Yeni İmtahan-->
+<!--      </a>-->
+<!--    </div>-->
+
+<!--    <div class="table-responsive">-->
+<!--      <table class="table table-hover align-middle">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--          <th>Adı</th>-->
+<!--          <th>Kurs</th>-->
+<!--          <th>Sual sayı</th>-->
+<!--          <th>Müddət (dəq)</th>-->
+<!--          <th>Qiymət</th>-->
+<!--          <th class="text-end">Əməliyyatlar</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="exam : ${exams}">-->
+<!--          <td th:text="${exam.name}">Exam Name</td>-->
+<!--          <td th:text="${exam.courseName}">Course Name</td>-->
+<!--          <td th:text="${exam.questionCount}">0</td>-->
+<!--          <td th:text="${exam.examDuration}">0</td>-->
+<!--          <td th:text="${exam.price}">0 AZN</td>-->
+<!--          <td class="text-end">-->
+<!--            <a th:href="@{/admin/exams/edit/{id}(id=${exam.id})}" class="btn btn-sm btn-light">-->
+<!--              <i class="fas fa-pen text-primary"></i>-->
+<!--            </a>-->
+<!--            <form th:action="@{/admin/exams/delete/{id}(id=${exam.id})}" method="post" th:object="${exam}" style="display:inline-block"-->
+<!--                  onsubmit="return confirm('Bu imtahanı silmək istədiyinizə əminsiniz?');">-->
+<!--              <button type="submit" class="btn btn-sm btn-light text-danger">-->
+<!--                <i class="fas fa-trash"></i>-->
+<!--              </button>-->
+<!--            </form>-->
+<!--          </td>-->
+<!--        </tr>-->
+
+<!--        <tr th:if="${#lists.isEmpty(exams)}">-->
+<!--          <td colspan="6" class="text-center py-5 text-muted">-->
+<!--            Hələ heç bir imtahan əlavə olunmayıb.-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--      </table>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="az" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+  <title>İmtahanlar | EduMaster OS</title>
+</head>
+<body>
+<div layout:fragment="page-title">İmtahanlar</div>
+
+<div layout:fragment="content">
+  <div class="glass-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold">Bütün İmtahanlar</h5>
+      <a th:href="@{/admin/exams/create}" class="btn btn-primary rounded-pill px-4">
+        <i class="fas fa-plus me-2"></i> Yeni İmtahan
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+        <tr>
+          <th>Adı</th>
+          <th>Kurs</th>
+          <th>Sual sayı</th>
+          <th>Müddət (dəq)</th>
+          <th>Qiymət</th>
+          <th class="text-end">Əməliyyatlar</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="exam : ${exams}">
+          <td class="fw-medium" th:text="${exam.name}">Exam Name</td>
+          <td th:text="${exam.courseName}">Course Name</td>
+          <td th:text="${exam.questionCount}">0</td>
+          <td th:text="${exam.examDuration}">0</td>
+          <td><span class="badge bg-primary-subtle text-primary" th:text="${exam.price}">0 AZN</span></td>
+          <td class="text-end">
+            <a th:href="@{/admin/exams/{id}/questions(id=${exam.id})}"
+               class="btn btn-sm btn-warning rounded-circle shadow-sm me-1" title="Sualları İdarə Et">
+              <i class="fas fa-question-circle text-white"></i>
+            </a>
+
+            <a th:href="@{/admin/exams/edit/{id}(id=${exam.id})}"
+               class="btn btn-sm btn-light rounded-circle shadow-sm me-1" title="Redaktə et">
+              <i class="fas fa-pen text-primary"></i>
+            </a>
+
+            <form th:action="@{/admin/exams/delete/{id}(id=${exam.id})}" method="post"
+                  style="display:inline-block"
+                  onsubmit="return confirm('Bu imtahanı silmək istədiyinizə əminsiniz?');">
+              <button type="submit" class="btn btn-sm btn-light text-danger rounded-circle shadow-sm" title="Sil">
+                <i class="fas fa-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(exams)}">
+          <td colspan="6" class="text-center py-5 text-muted">
+            <i class="fas fa-folder-open mb-2 fs-3"></i><br>
+            Hələ heç bir imtahan əlavə olunmayıb.
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

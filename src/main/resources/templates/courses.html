@@ -1,0 +1,92 @@
+<!-- courses.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+  <title>Kurslar | EduMaster</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+  <!-- COURSE HEADER -->
+  <header class="course-header mb-5 py-5 bg-light">
+    <div class="container text-center">
+      <h1 class="fw-bold mb-3">Təhsil Kataloqu</h1>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="input-group shadow-sm rounded-pill overflow-hidden bg-white px-3 py-1">
+            <input type="text" id="courseSearch" class="form-control border-0"
+                   placeholder="Kurs axtar..." onkeyup="searchCourse()">
+            <span class="p-2 text-primary"><i class="fas fa-search"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CATEGORY FILTER BUTTONS -->
+  <div class="container mb-4 d-flex justify-content-center gap-2 flex-wrap">
+    <button class="btn btn-white shadow-sm rounded-pill px-4 active" onclick="filterCat('all')">Hamısı</button>
+    <button class="btn btn-white shadow-sm rounded-pill px-4" onclick="filterCat('free')">Pulsuz</button>
+    <button class="btn btn-white shadow-sm rounded-pill px-4" onclick="filterCat('paid')">Ödənişli</button>
+    <button class="btn btn-white shadow-sm rounded-pill px-4" onclick="filterCat('cert')">Sertifikatlı</button>
+  </div>
+
+  <!-- COURSE GRID -->
+  <div class="container pb-5">
+    <div class="row g-4" id="course-grid">
+
+      <!-- Paid + Cert -->
+      <div class="col-lg-4 col-md-6 course-item" data-type="paid cert">
+        <div class="c-card shadow-sm bg-white rounded-4 overflow-hidden border">
+          <img src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=500"
+               class="w-100" style="height: 200px; object-fit: cover;">
+          <div class="p-4">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="badge bg-danger">Sertifikatlı</span>
+              <span class="text-primary fw-bold">15 AZN</span>
+            </div>
+            <h5 class="fw-bold c-title">SQL Master dərsləri</h5>
+            <p class="text-muted small">Sıfırdan Expert səviyyəsinə qədər SQL.</p>
+            <button onclick="accessCourse('sql', true, 15)"
+                    class="btn btn-primary w-100 rounded-pill mt-3">Kursa Daxil Ol
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Free -->
+      <div class="col-lg-4 col-md-6 course-item" data-type="free">
+        <div class="c-card shadow-sm bg-white rounded-4 overflow-hidden border">
+          <img src="https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=500"
+               class="w-100" style="height: 200px; object-fit: cover;">
+          <div class="p-4">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="badge bg-success">Pulsuz</span>
+              <span class="text-success fw-bold">PULSUZ</span>
+            </div>
+            <h5 class="fw-bold c-title">C# Giriş Kursu</h5>
+            <p class="text-muted small">Backend dünyasına ilk addım.</p>
+            <button onclick="accessCourse('csharp', false, 0)"
+                    class="btn btn-outline-primary w-100 rounded-pill mt-3">İzləyə Başla
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- PAGE SPECIFIC SCRIPT -->
+<th:block layout:fragment="script">
+  <script th:src="@{/js/courses.js}"></script>
+</th:block>
+
+</body>
+</html>
